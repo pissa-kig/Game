@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple JS Game</title>
+    <title>Basket Catch Game</title>
     <style>
         body {
             margin: 0;
@@ -14,23 +14,24 @@
             justify-content: center;
             height: 100vh;
             color: white;
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden;
         }
         canvas {
             background: #ecf0f1;
             border: 4px solid #34495e;
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
-            cursor: none; /* Hide cursor so player is the focus */
+            cursor: none;
         }
-        h1 { margin-bottom: 10px; }
+        h1 { margin: 10px 0; text-shadow: 2px 2px #000; }
+        .info { margin-top: 10px; color: #bdc3c7; }
     </style>
 </head>
 <body>
 
     <h1>Score: <span id="scoreVal">0</span></h1>
     <canvas id="gameCanvas" width="600" height="400"></canvas>
-    <p>Move your mouse/touch to catch the blue squares!</p>
+    <p class="info">Slide the basket to catch the falling blocks!</p>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
@@ -40,83 +41,102 @@
         let score = 0;
         let gameActive = true;
 
-        // Player properties
+        // --- IMAGE LOADING ---
+        const basketImg = new Image();
+        basketImg.src = 'basket.png'; // Make sure this file is in your folder!
+
+        // Player (Basket) properties
         const player = {
-            x: 300,
-            y: 350,
-            width: 50,
-            height: 10,
-            color: '#e74c3c' // Red paddle
+            x: 275,
+            y: 330,
+            width: 70,  // Width of your basket image
+            height: 50, // Height of your basket image
         };
 
-        // Target properties
+        // Falling Target properties
         const target = {
             x: Math.random() * (canvas.width - 20),
             y: 0,
             size: 20,
             speed: 3,
-            color: '#3498db' // Blue square
+            color: '#3498db'
         };
 
-        // Track mouse movement
+        // Mouse/Touch movement
         canvas.addEventListener('mousemove', (e) => {
             const rect = canvas.getBoundingClientRect();
+            // Centers the basket on the mouse
             player.x = e.clientX - rect.left - player.width / 2;
+
+            // Keep basket inside canvas boundaries
+            if (player.x < 0) player.x = 0;
+            if (player.x > canvas.width - player.width) player.x = canvas.width - player.width;
         });
 
         function update() {
             if (!gameActive) return;
 
-            // Move target down
             target.y += target.speed;
 
-            // Check collision
+            // Collision Detection Logic
+            // Checks if the target is within the basket's horizontal area 
+            // and hitting the top of the basket.
             if (
                 target.y + target.size > player.y &&
-                target.x > player.x &&
+                target.y < player.y + player.height &&
+                target.x + target.size > player.x &&
                 target.x < player.x + player.width
             ) {
                 score++;
                 scoreElement.innerText = score;
                 resetTarget();
-                // Make it slightly harder
-                target.speed += 0.2;
+                target.speed += 0.2; // Increase difficulty
             }
 
-            // Check if missed
+            // Game Over if target hits the bottom
             if (target.y > canvas.height) {
                 gameOver();
             }
         }
 
         function resetTarget() {
-            target.y = 0;
+            target.y = -20; 
             target.x = Math.random() * (canvas.width - target.size);
         }
 
         function gameOver() {
             gameActive = false;
-            alert("Game Over! Your score: " + score);
+            alert("Game Over! You caught " + score + " items.");
             document.location.reload();
         }
 
         function draw() {
-            // Clear canvas
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-            // Draw Player
-            ctx.fillStyle = player.color;
-            ctx.fillRect(player.x, player.y, player.width, player.height);
+            // Draw Basket Image
+            // We use drawImage(image, x, y, width, height)
+            ctx.drawImage(basketImg, player.x, player.y, player.width, player.height);
 
-            // Draw Target
+            // Draw Falling Item
             ctx.fillStyle = target.color;
-            ctx.fillRect(target.x, target.y, target.size, target.size);
+            ctx.beginPath();
+            ctx.arc(target.x + target.size/2, target.y + target.size/2, target.size/2, 0, Math.PI*2);
+            ctx.fill();
 
             update();
             requestAnimationFrame(draw);
         }
 
-        draw(); // Start the loop
+        // Start the game once the image is loaded
+        basketImg.onload = () => {
+            draw();
+        };
+
+        // Fallback: Start anyway if image fails to load after 2 seconds
+        setTimeout(() => {
+            if (gameActive) draw();
+        }, 2000);
+
     </script>
 </body>
 </html>
