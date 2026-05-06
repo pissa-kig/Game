@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple JS Game</title>
+    <style>
+        body {
+            margin: 0;
+            background: #2c3e50;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            color: white;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        canvas {
+            background: #ecf0f1;
+            border: 4px solid #34495e;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            cursor: none; /* Hide cursor so player is the focus */
+        }
+        h1 { margin-bottom: 10px; }
+    </style>
+</head>
+<body>
+
+    <h1>Score: <span id="scoreVal">0</span></h1>
+    <canvas id="gameCanvas" width="600" height="400"></canvas>
+    <p>Move your mouse/touch to catch the blue squares!</p>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreElement = document.getElementById('scoreVal');
+
+        let score = 0;
+        let gameActive = true;
+
+        // Player properties
+        const player = {
+            x: 300,
+            y: 350,
+            width: 50,
+            height: 10,
+            color: '#e74c3c' // Red paddle
+        };
+
+        // Target properties
+        const target = {
+            x: Math.random() * (canvas.width - 20),
+            y: 0,
+            size: 20,
+            speed: 3,
+            color: '#3498db' // Blue square
+        };
+
+        // Track mouse movement
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            player.x = e.clientX - rect.left - player.width / 2;
+        });
+
+        function update() {
+            if (!gameActive) return;
+
+            // Move target down
+            target.y += target.speed;
+
+            // Check collision
+            if (
+                target.y + target.size > player.y &&
+                target.x > player.x &&
+                target.x < player.x + player.width
+            ) {
+                score++;
+                scoreElement.innerText = score;
+                resetTarget();
+                // Make it slightly harder
+                target.speed += 0.2;
+            }
+
+            // Check if missed
+            if (target.y > canvas.height) {
+                gameOver();
+            }
+        }
+
+        function resetTarget() {
+            target.y = 0;
+            target.x = Math.random() * (canvas.width - target.size);
+        }
+
+        function gameOver() {
+            gameActive = false;
+            alert("Game Over! Your score: " + score);
+            document.location.reload();
+        }
+
+        function draw() {
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Player
+            ctx.fillStyle = player.color;
+            ctx.fillRect(player.x, player.y, player.width, player.height);
+
+            // Draw Target
+            ctx.fillStyle = target.color;
+            ctx.fillRect(target.x, target.y, target.size, target.size);
+
+            update();
+            requestAnimationFrame(draw);
+        }
+
+        draw(); // Start the loop
+    </script>
+</body>
+</html>
