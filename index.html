@@ -237,7 +237,9 @@ function keepInBounds() {
 function updateHighScoreDisplay() {
     const highScores = JSON.parse(localStorage.getItem('appleScores')) || [];
     const topScore = highScores.length > 0 ? highScores[0].score : 0;
-    document.getElementById('highScoreVal').innerText = topScore;
+    const highScoreDisplay = document.getElementById('highScoreVal');
+    highScoreDisplay.innerText = topScore;
+    highScoreDisplay.style.color = "#f1c40f"; // Reset to Gold on load
 }
 // --- GAME LOGIC ---
 function spawnApple() {
@@ -279,6 +281,12 @@ function update(timestamp) {
             a.x + a.width > player.x && a.x < player.x + player.width) {
             score++;
             scoreElement.innerText = score;
+            const highScoreDisplay = document.getElementById('highScoreVal');
+            const currentBest = parseInt(highScoreDisplay.innerText);
+            if (score > currentBest) {
+                highScoreDisplay.innerText = score;
+                highScoreDisplay.style.color = "#2ecc71"; // Turn it green to show a new record!
+            }
             apples.splice(i, 1);
             continue;
         }
