@@ -48,9 +48,11 @@
         h1 { margin: 5px 0; text-shadow: 2px 2px #000; }
         
         #scoreList {
-            list-style: none;
-            padding: 0;
-            margin-top: 20px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 140px; /* Prevents long names from overlapping the score */
+            display: inline-block;
         }
 
         #scoreList li {
@@ -112,7 +114,7 @@
     <img src="settings.png" id="settingsIcon" onclick="toggleSettings()" alt="Settings" style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%); width: 75px; cursor: pointer; z-index: 1001;">
 
     <div id="sidePanel">
-        <h3 style="margin-top: 0; color: #3498db; border-bottom: 2px solid #3498db; padding-bottom: 5px;">Your High-Scores</h3>
+        <h3 style="margin-top: 0; color: #3498db; border-bottom: 2px solid #3498db; padding-bottom: 5px;">Your Scores</h3>
         <ul id="scoreList">
             </ul>
     </div>
@@ -127,7 +129,7 @@
         <div id="gameOverMenu">
             <h2 style="color: #e74c3c; margin-top:0; font-size: 2em;">GAME OVER</h2>
             <p style="font-size: 1.2em;">Final Score: <span id="finalScore">0</span></p>
-            <input type="text" id="playerName" placeholder="Your Name" maxlength="10"><br>
+            <input type="text" id="playerName" placeholder="Your Name" maxlength="100"><br>
             
             <div class="btn-container">
                 <button class="save-btn" onclick="submitScore()">Save & Restart</button>
@@ -258,6 +260,16 @@ function draw(timestamp) {
     
     ctx.drawImage(basketImg, player.x, player.y, player.width, player.height);
     apples.forEach(a => ctx.drawImage(appleImg, a.x, a.y, a.width, a.height));
+
+    // --- DRAW HIGH SCORE ON CANVAS ---
+    const highScores = JSON.parse(localStorage.getItem('appleScores')) || [];
+    const topScore = highScores.length > 0 ? highScores[0].score : 0;
+    
+    ctx.fillStyle = "rgba(44, 62, 80, 0.6)"; // Dark semi-transparent text
+    ctx.font = "bold 18px Arial";
+    ctx.textAlign = "left";
+    ctx.fillText("All-Time High Score: " + topScore, 20, 30);
+    // ---------------------------------
     
     if (isPaused) {
         ctx.fillStyle = "rgba(0,0,0,0.3)";
