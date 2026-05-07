@@ -48,36 +48,44 @@
         h1 { margin: 5px 0; text-shadow: 2px 2px #000; }
         
         #scoreList {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 140px; /* Prevents long names from overlapping the score */
-            display: inline-block;
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+            width: 100%; /* Ensure the list takes full sidebar width */
         }
-
+        
         #scoreList li {
             background: rgba(255, 255, 255, 0.1);
             margin-bottom: 8px;
             padding: 10px;
             border-radius: 5px;
-            display: flex; /* This turns on the flexbox layout */
-            justify-content: space-between; /* This creates the space between name and score */
+            display: flex;
+            justify-content: space-between; /* This pushes name left, score right */
             align-items: center;
             cursor: pointer;
             transition: background 0.2s;
+            width: 100%;
+            box-sizing: border-box; /* Prevents padding from breaking width */
         }
         
-        #scoreList li:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-        
-        /* This ensures long names don't crash into the score */
+        /* Ensure the name stays on the left and handles long text */
         #scoreList li span:first-child {
-            flex-grow: 1;
-            margin-right: 15px; /* Minimum gap */
+            text-align: left;
+            flex: 1;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            margin-right: 10px;
+        }
+        
+        /* Ensure the score stays pinned to the right */
+        #scoreList li strong {
+            text-align: right;
+            min-width: 30px;
+        }
+                
+        #scoreList li:hover {
+            background: rgba(255, 255, 255, 0.2);
         }
 
         #gameOverMenu {
@@ -97,29 +105,29 @@
         .btn-container { display: flex; gap: 10px; justify-content: center; }
         
         button { padding: 12px 20px; cursor: pointer; border: none; border-radius: 5px; font-weight: bold; transition: 0.2s; }
-        .save-btn { background: #2ecc71; color: white; }
-        .save-btn:hover { background: #27ae60; }
-        .skip-btn { background: #f70c0c; color: white; }
-        .skip-btn:hover { background: #e07c75; }
-        #creditsBtn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: #f1c40f; /* Gold color */
-    color: #2c3e50;      /* Dark text for contrast */
-    border: 2px solid #d4af37;
-    padding: 8px 15px;
-    border-radius: 5px;
-    font-weight: bold;
-    cursor: pointer;
-    z-index: 1000;       /* Ensures it stays above the sidebar */
-    transition: 0.3s;
-}
+            .save-btn { background: #2ecc71; color: white; }
+            .save-btn:hover { background: #27ae60; }
+            .skip-btn { background: #f70c0c; color: white; }
+            .skip-btn:hover { background: #e07c75; }
+            #creditsBtn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #f1c40f; /* Gold color */
+            color: #2c3e50;      /* Dark text for contrast */
+            border: 2px solid #d4af37;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            z-index: 1000;       /* Ensures it stays above the sidebar */
+            transition: 0.3s;
+        }
 
-#creditsBtn:hover {
-    background: #d4af37; /* Slightly darker gold on hover */
-    transform: scale(1.05);
-}
+        #creditsBtn:hover {
+            background: #d4af37; /* Slightly darker gold on hover */
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
