@@ -60,8 +60,24 @@
             margin-bottom: 8px;
             padding: 10px;
             border-radius: 5px;
-            display: flex;
-            justify-content: space-between;
+            display: flex; /* This turns on the flexbox layout */
+            justify-content: space-between; /* This creates the space between name and score */
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        #scoreList li:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* This ensures long names don't crash into the score */
+        #scoreList li span:first-child {
+            flex-grow: 1;
+            margin-right: 15px; /* Minimum gap */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         #gameOverMenu {
