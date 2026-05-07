@@ -138,7 +138,10 @@
     <div id="gameContainer">
         <h2 style="color: #ff4d4d; margin: 0; font-size: 2.5em; text-transform: uppercase; letter-spacing: 2px;">Apples and Basket</h2>
         
-        <h1>Score: <span id="scoreVal">0</span></h1>
+        <h1 style="display: flex; gap: 40px; justify-content: center; align-items: center;">
+        <div>Score: <span id="scoreVal">0</span></div>
+        <div style="font-size: 0.6em; color: #f1c40f; opacity: 0.9;">Best: <span id="highScoreVal">0</span></div>
+    </h1>
         <canvas id="gameCanvas" width="600" height="400"></canvas>
         <p>Catch the Apples!</p>
 
@@ -194,7 +197,10 @@ appleImg.src = 'apple.png';
 
 const player = { x: 260, y: 330, width: 80, height: 60 };
 
-window.onload = displayLeaderboard;
+window.onload = function() {
+    displayLeaderboard();
+    updateHighScoreDisplay(); // Add this line
+};
 
 // --- INPUT HANDLING ---
 function handleMove(inputX) {
@@ -219,7 +225,12 @@ function keepInBounds() {
     if (player.x < 0) player.x = 0;
     if (player.x > canvas.width - player.width) player.x = canvas.width - player.width;
 }
-
+// --- HIGH SCORE FUNCTION ---
+function updateHighScoreDisplay() {
+    const highScores = JSON.parse(localStorage.getItem('appleScores')) || [];
+    const topScore = highScores.length > 0 ? highScores[0].score : 0;
+    document.getElementById('highScoreVal').innerText = topScore;
+}
 // --- GAME LOGIC ---
 function spawnApple() {
     const currentSpeed = 200 + (Math.floor(score / 5) * 50); // Speed in pixels per second
@@ -273,19 +284,8 @@ function update(timestamp) {
 
 function draw(timestamp) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
     ctx.drawImage(basketImg, player.x, player.y, player.width, player.height);
     apples.forEach(a => ctx.drawImage(appleImg, a.x, a.y, a.width, a.height));
-
-    // --- DRAW HIGH SCORE ON CANVAS ---
-    const highScores = JSON.parse(localStorage.getItem('appleScores')) || [];
-    const topScore = highScores.length > 0 ? highScores[0].score : 0;
-    
-    ctx.fillStyle = "rgba(44, 62, 80, 0.6)"; // Dark semi-transparent text
-    ctx.font = "bold 18px Arial";
-    ctx.textAlign = "left";
-    ctx.fillText("All-Time High Score: " + topScore, 20, 35);
-    // ---------------------------------
     
     if (isPaused) {
         ctx.fillStyle = "rgba(0,0,0,0.3)";
