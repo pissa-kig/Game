@@ -25,6 +25,34 @@
         }
         h1 { margin: 10px 0; text-shadow: 2px 2px #000; }
         .info { margin-top: 10px; color: #bdc3c7; }
+
+        /* Game Over Menu Style */
+        #gameOverMenu {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.9);
+            padding: 25px;
+            text-align: center;
+            border: 2px solid white;
+            border-radius: 15px;
+            z-index: 100;
+            min-width: 250px;
+        }
+        #leaderboard {
+            margin: 15px 0;
+            text-align: left;
+            font-size: 0.9em;
+            background: rgba(255,255,255,0.1);
+            padding: 10px;
+            border-radius: 8px;
+        }
+        ul { list-style: none; padding: 0; margin: 5px 0; }
+        li { border-bottom: 1px solid #444; padding: 3px 0; display: flex; justify-content: space-between; }
+        input { padding: 8px; width: 80%; border-radius: 5px; border: none; margin-bottom: 10px; }
+        button { padding: 10px 20px; cursor: pointer; background: #2ecc71; color: white; border: none; border-radius: 5px; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -32,12 +60,19 @@
     <h1>Score: <span id="scoreVal">0</span></h1>
     <canvas id="gameCanvas" width="600" height="400"></canvas>
     <p class="info">Catch the apples with your basket!</p>
-    <div id="gameOverMenu" style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:rgba(0,0,0,0.9); padding:20px; text-align:center; border:2px solid white; border-radius:10px; z-index:100;">
-    <h2>GAME OVER</h2>
-    <p>Your Score: <span id="finalScore">0</span></p>
-    <input type="text" id="playerName" placeholder="Enter Name" maxlength="10" style="padding:10px; width:150px;"><br><br>
-    <button onclick="submitScore()" style="padding:10px 20px; cursor:pointer;">Submit Score</button>
-</div>
+
+    <div id="gameOverMenu">
+        <h2 style="color: #e74c3c;">GAME OVER</h2>
+        <p>Your Score: <span id="finalScore">0</span></p>
+        
+        <div id="leaderboard">
+            <strong>Top 5 Scores:</strong>
+            <ul id="scoreList"></ul>
+        </div>
+
+        <input type="text" id="playerName" placeholder="Enter Name" maxlength="10"><br>
+        <button onclick="submitScore()">Save & Play Again</button>
+    </div>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
@@ -50,48 +85,27 @@
         // --- IMAGE LOADING ---
         const basketImg = new Image();
         basketImg.src = 'basket.png'; 
-
         const appleImg = new Image();
         appleImg.src = 'apple.png'; 
 
-        // Player (Basket) properties
-        const player = {
-            x: 275,
-            y: 330,
-            width: 80,  
-            height: 60, 
-        };
-
-        // Falling Target (Apple) properties
-        const target = {
-            x: Math.random() * (canvas.width - 40),
-            y: -50,
-            width: 40,
-            height: 40,
-            speed: 5
-        };
+        const player = { x: 275, y: 330, width: 80, height: 60 };
+        const target = { x: Math.random() * (canvas.width - 40), y: -50, width: 40, height: 40, speed: 3 };
 
         // Mouse movement logic
         canvas.addEventListener('mousemove', (e) => {
             const rect = canvas.getBoundingClientRect();
             player.x = e.clientX - rect.left - player.width / 2;
-
             if (player.x < 0) player.x = 0;
             if (player.x > canvas.width - player.width) player.x = canvas.width - player.width;
         });
 
         function update() {
             if (!gameActive) return;
-
             target.y += target.speed;
 
             // Collision Detection
-            if (
-                target.y + target.height > player.y &&
-                target.y < player.y + player.height &&
-                target.x + target.width > player.x &&
-                target.x < player.x + player.width
-            ) {
+            if (target.y + target.height > player.y && target.y < player.y + player.height &&
+                target.x + target.width > player.x && target.x < player.x + player.width) {
                 score++;
                 scoreElement.innerText = score;
                 resetTarget();
@@ -99,9 +113,7 @@
             }
 
             // Game Over
-            if (target.y > canvas.height) {
-                gameOver();
-            }
+            if (target.y > canvas.height) gameOver();
         }
 
         function resetTarget() {
@@ -113,56 +125,55 @@
             gameActive = false;
             document.getElementById('finalScore').innerText = score;
             document.getElementById('gameOverMenu').style.display = 'block';
-            canvas.style.filter = "blur(5px)"; // Optional visual effect
+            canvas.style.filter = "blur(5px)";
+            displayLeaderboard();
         }
 
-        function submitScore() {
-            const name = document.getElementById('playerName').value;
-            if (name === "") { alert("Please enter a name!"); return; }
+        // --- SCORE SAVING LOGIC ---
 
-            // Use Fetch API to send data to your PHP script
-            fetch('save_score.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: `name=${encodeURIComponent(name)}&score=${score}`
-            })
-            .then(response => response.text())
-            .then(data => {
-                alert("Score Saved!");
-                location.reload(); // Refresh to show the new leaderboard
-            });
-       }
+        function submitScore() {
+            const nameInput = document.getElementById('playerName');
+            const name = nameInput.value || "Player";
+
+            // Get current scores from localStorage
+            let highScores = JSON.parse(localStorage.getItem('appleScores')) || [];
+            
+            // Add new score
+            highScores.push({ name: name, score: score });
+            
+            // Sort (highest first) and keep top 5
+            highScores.sort((a, b) => b.score - a.score);
+            highScores = highScores.slice(0, 5);
+            
+            // Save back to localStorage
+            localStorage.setItem('appleScores', JSON.stringify(highScores));
+            
+            location.reload(); // Restart game
+        }
+
+        function displayLeaderboard() {
+            const scoreList = document.getElementById('scoreList');
+            const highScores = JSON.parse(localStorage.getItem('appleScores')) || [];
+            
+            scoreList.innerHTML = highScores.map(entry => 
+                `<li><span>${entry.name}</span> <span>${entry.score}</span></li>`
+            ).join('');
+            
+            if (highScores.length === 0) scoreList.innerHTML = "<li>No scores yet!</li>";
+        }
+
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Draw Basket
             ctx.drawImage(basketImg, player.x, player.y, player.width, player.height);
-
-            // Draw Apple
             ctx.drawImage(appleImg, target.x, target.y, target.width, target.height);
-
             update();
             requestAnimationFrame(draw);
         }
 
-        // Wait for images to load before starting
         let imagesLoaded = 0;
-        const totalImages = 2;
-
-        function checkLoad() {
-            imagesLoaded++;
-            if (imagesLoaded === totalImages) {
-                draw();
-            }
-        }
-
+        function checkLoad() { if (++imagesLoaded === 2) draw(); }
         basketImg.onload = checkLoad;
         appleImg.onload = checkLoad;
-
-        // Error handling if images are missing
-        basketImg.onerror = () => console.error("Could not find basket.png");
-        appleImg.onerror = () => console.error("Could not find apple.png");
-
     </script>
 </body>
 </html>
