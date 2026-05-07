@@ -122,7 +122,7 @@
         
         <h1>Score: <span id="scoreVal">0</span></h1>
         <canvas id="gameCanvas" width="600" height="400"></canvas>
-        <p>Catch the apples! Game speeds up every 5 points.</p>
+        <p>Catch the Apples!</p>
 
         <div id="gameOverMenu">
             <h2 style="color: #e74c3c; margin-top:0; font-size: 2em;">GAME OVER</h2>
@@ -235,7 +235,7 @@ function keepInBounds() {
 // --- GAME LOGIC ---
 
 function spawnApple() {
-    const currentSpeed = 3 + (Math.floor(score / 5) * 0.5);
+    const currentSpeed = 5 + (Math.floor(score / 5) * 0.7);
     apples.push({
         x: Math.random() * (canvas.width - 40),
         y: -50,
