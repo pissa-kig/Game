@@ -9,7 +9,7 @@
             margin: 0;
             background: #2c3e50;
             display: flex;
-            flex-direction: row; /* Changed to row to put sidebar next to game */
+            flex-direction: row;
             align-items: center;
             justify-content: center;
             height: 100vh;
@@ -18,10 +18,9 @@
             overflow: hidden;
         }
 
-        /* --- SIDEBAR STYLE --- */
         #sidePanel {
-            width: 200px;
-            background: rgba(0, 0, 0, 0.3);
+            width: 220px;
+            background: rgba(0, 0, 0, 0.4);
             border-right: 2px solid #34495e;
             height: 100vh;
             padding: 20px;
@@ -36,6 +35,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            position: relative;
         }
 
         canvas {
@@ -45,9 +45,8 @@
             cursor: none;
         }
 
-        h1 { margin: 10px 0; text-shadow: 2px 2px #000; }
+        h1 { margin: 5px 0; text-shadow: 2px 2px #000; }
         
-        /* Leaderboard List Styling */
         #scoreList {
             list-style: none;
             padding: 0;
@@ -61,85 +60,75 @@
             border-radius: 5px;
             display: flex;
             justify-content: space-between;
-            font-size: 0.9em;
         }
 
-        /* Game Over Overlay */
         #gameOverMenu {
             display: none;
             position: absolute;
-            background: rgba(0, 0, 0, 0.9);
-            padding: 25px;
+            background: rgba(0, 0, 0, 0.95);
+            padding: 30px;
             text-align: center;
-            border: 2px solid #e74c3c;
+            border: 3px solid #e74c3c;
             border-radius: 15px;
             z-index: 100;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
         }
-        .btn-container { 
-    display: flex; 
-    gap: 10px; 
-    justify-content: center; 
-    margin-top: 10px; 
-}
 
-button { 
-    padding: 10px 15px; 
-    cursor: pointer; 
-    border: none; 
-    border-radius: 5px; 
-    font-weight: bold; 
-}
-
-.save-btn { background: #2ecc71; color: white; }
-.skip-btn { background: #95a5a6; color: white; }
-
-        input { padding: 8px; width: 80%; border-radius: 5px; border: none; margin: 10px 0; }
-        button { padding: 10px 20px; cursor: pointer; background: #2ecc71; color: white; border: none; border-radius: 5px; font-weight: bold; }
+        input { padding: 10px; width: 80%; border-radius: 5px; border: none; margin: 15px 0; font-size: 1em; }
+        
+        .btn-container { display: flex; gap: 10px; justify-content: center; }
+        
+        button { padding: 12px 20px; cursor: pointer; border: none; border-radius: 5px; font-weight: bold; transition: 0.2s; }
+        .save-btn { background: #2ecc71; color: white; }
+        .save-btn:hover { background: #27ae60; }
+        .skip-btn { background: #e67e22; color: white; }
+        .skip-btn:hover { background: #d35400; }
     </style>
 </head>
 <body>
 
     <div id="sidePanel">
-        <h3 style="margin-top: 0; color: #3498db; border-bottom: 2px solid #3498db; padding-bottom: 5px;">High Scores</h3>
-        <ul id="scoreList">
-            </ul>
+        <h3 style="margin-top: 0; color: #3498db; border-bottom: 2px solid #3498db; padding-bottom: 5px;">Leaderboard</h3>
+        <ul id="scoreList"></ul>
     </div>
 
     <div id="gameContainer">
-        <h1>Score: <span id="scoreVal">0</span></h1>
-        <canvas id="gameCanvas" width="600" height="400"></canvas>
-        <p>Catch the apples!</p>
-
-        <div id="gameOverMenu">
-    <h2 style="color: #e74c3c; margin-top:0;">GAME OVER</h2>
-    <p>You caught <span id="finalScore">0</span> apples!</p>
-    <input type="text" id="playerName" placeholder="Enter Name" maxlength="10"><br>
+    <h2 style="color: #ff4d4d; margin: 0; font-size: 2.5em; text-transform: uppercase; letter-spacing: 2px;">Apple Catch Extreme</h2>
     
-    <div class="btn-container">
-        <button class="save-btn" onclick="submitScore()">Save & Restart</button>
-        <button class="skip-btn" onclick="discardScore()">Do Not Save</button>
+    <h1>Score: <span id="scoreVal">0</span></h1>
+    <canvas id="gameCanvas" width="600" height="400"></canvas>
+    <p>Game gets harder every 5 points!</p>
+
+    <div id="gameOverMenu">
+        <h2 style="color: #e74c3c; margin-top:0; font-size: 2em;">GAME OVER</h2>
+        <p style="font-size: 1.2em;">Final Score: <span id="finalScore">0</span></p>
+        <input type="text" id="playerName" placeholder="Your Name" maxlength="10"><br>
+        
+        <div class="btn-container">
+            <button class="save-btn" onclick="submitScore()">Save & Restart</button>
+            <button class="skip-btn" onclick="discardScore()">Don't Save</button>
+        </div>
     </div>
 </div>
-    </div>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const scoreElement = document.getElementById('scoreVal');
-        const scoreList = document.getElementById('scoreList');
+        const scoreListUl = document.getElementById('scoreList');
 
         let score = 0;
         let gameActive = true;
+        let apples = [];
+        let lastSpawnTime = 0;
 
         const basketImg = new Image();
         basketImg.src = 'basket.png'; 
         const appleImg = new Image();
         appleImg.src = 'apple.png'; 
 
-        const player = { x: 275, y: 330, width: 80, height: 60 };
-        const target = { x: Math.random() * (canvas.width - 40), y: -50, width: 40, height: 40, speed: 3 };
+        const player = { x: 260, y: 330, width: 80, height: 60 };
 
-        // Initialize high scores on page load
         window.onload = displayLeaderboard;
 
         canvas.addEventListener('mousemove', (e) => {
@@ -149,70 +138,93 @@ button {
             if (player.x > canvas.width - player.width) player.x = canvas.width - player.width;
         });
 
-        function discardScore() {
-    location.reload(); // Simply refreshes the page without touching localStorage
-}
-        function update() {
-            if (!gameActive) return;
-            target.y += target.speed;
-
-            if (target.y + target.height > player.y && target.y < player.y + player.height &&
-                target.x + target.width > player.x && target.x < player.x + player.width) {
-                score++;
-                scoreElement.innerText = score;
-                resetTarget();
-                target.speed += 0.2; 
-            }
-
-            if (target.y > canvas.height) gameOver();
+        function spawnApple() {
+            // Difficulty increases with score
+            // Speed starts at 3 and increases by 0.5 for every 5 points
+            const currentSpeed = 3 + (Math.floor(score / 5) * 0.5);
+            
+            apples.push({
+                x: Math.random() * (canvas.width - 40),
+                y: -50,
+                width: 40,
+                height: 40,
+                speed: currentSpeed
+            });
         }
 
-        function resetTarget() {
-            target.y = -50; 
-            target.x = Math.random() * (canvas.width - target.width);
+        function update(timestamp) {
+            if (!gameActive) return;
+
+            // Spawn Rate gets faster every 5 points
+            // Starts at 1500ms, drops by 150ms every 5 points (min 400ms)
+            let currentSpawnRate = Math.max(400, 1500 - (Math.floor(score / 5) * 150));
+
+            if (timestamp - lastSpawnTime > currentSpawnRate) {
+                spawnApple();
+                lastSpawnTime = timestamp;
+            }
+
+            for (let i = apples.length - 1; i >= 0; i--) {
+                let a = apples[i];
+                a.y += a.speed;
+
+                // Collision
+                if (a.y + a.height > player.y && a.y < player.y + player.height &&
+                    a.x + a.width > player.x && a.x < player.x + player.width) {
+                    score++;
+                    scoreElement.innerText = score;
+                    apples.splice(i, 1);
+                    continue;
+                }
+
+                // Floor hit
+                if (a.y > canvas.height) {
+                    gameOver();
+                    return;
+                }
+            }
         }
 
         function gameOver() {
             gameActive = false;
             document.getElementById('finalScore').innerText = score;
             document.getElementById('gameOverMenu').style.display = 'block';
-            canvas.style.filter = "blur(5px)";
+            canvas.style.filter = "blur(8px)";
         }
 
         function submitScore() {
             const nameInput = document.getElementById('playerName');
-            const name = nameInput.value || "Player";
+            const name = nameInput.value || "Anonymous";
             let highScores = JSON.parse(localStorage.getItem('appleScores')) || [];
-            
             highScores.push({ name: name, score: score });
             highScores.sort((a, b) => b.score - a.score);
-            highScores = highScores.slice(0, 8); // Keep top 8
-            
-            localStorage.setItem('appleScores', JSON.stringify(highScores));
+            localStorage.setItem('appleScores', JSON.stringify(highScores.slice(0, 10)));
             location.reload(); 
+        }
+
+        function discardScore() {
+            location.reload();
         }
 
         function displayLeaderboard() {
             const highScores = JSON.parse(localStorage.getItem('appleScores')) || [];
-            scoreList.innerHTML = highScores.map(entry => 
+            scoreListUl.innerHTML = highScores.map(entry => 
                 `<li><span>${entry.name}</span> <strong>${entry.score}</strong></li>`
             ).join('');
-            
-            if (highScores.length === 0) {
-                scoreList.innerHTML = "<li style='opacity: 0.5;'>No scores yet</li>";
-            }
+            if (highScores.length === 0) scoreListUl.innerHTML = "<li>No scores yet</li>";
         }
 
-        function draw() {
+        function draw(timestamp) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.drawImage(basketImg, player.x, player.y, player.width, player.height);
-            ctx.drawImage(appleImg, target.x, target.y, target.width, target.height);
-            update();
+            apples.forEach(a => ctx.drawImage(appleImg, a.x, a.y, a.width, a.height));
+            
+            update(timestamp);
             requestAnimationFrame(draw);
         }
 
         let imagesLoaded = 0;
-        function checkLoad() { if (++imagesLoaded === 2) draw(); }
+        function checkLoad() { if (++imagesLoaded === 2) requestAnimationFrame(draw); }
         basketImg.onload = checkLoad;
         appleImg.onload = checkLoad;
     </script>
