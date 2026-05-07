@@ -163,9 +163,10 @@ const scoreListUl = document.getElementById('scoreList');
 let score = 0;
 let gameActive = true;
 let isPaused = false;
-let controlMode = 'drag'; // 'drag' or 'click'
+let controlMode = 'drag'; 
 let apples = [];
 let lastSpawnTime = 0;
+let lastFrameTime = 0; // Track the previous frame time
 let scoreToDeleteIndex = null;
 
 const basketImg = new Image();
@@ -177,41 +178,10 @@ const player = { x: 260, y: 330, width: 80, height: 60 };
 
 window.onload = displayLeaderboard;
 
-// --- SETTINGS & PAUSE LOGIC ---
-
-function togglePause() {
-    if (!gameActive) return;
-    isPaused = !isPaused;
-    if (isPaused) {
-        canvas.style.filter = "blur(4px) grayscale(50%)";
-    } else {
-        canvas.style.filter = "none";
-        // Reset lastSpawnTime so a bunch of apples don't drop instantly
-        lastSpawnTime = performance.now();
-    }
-}
-
-function toggleSettings() {
-    const menu = document.getElementById('settingsMenu');
-    menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
-}
-
-function updateControlMode(val) {
-    controlMode = val;
-}
-
 // --- INPUT HANDLING ---
-
 function handleMove(inputX) {
     if (isPaused || !gameActive) return;
-
-    if (controlMode === 'drag') {
-        // Smooth movement (centers on cursor)
-        player.x = inputX - player.width / 2;
-    } else {
-        // "Snap to Click" (old version style)
-        player.x = inputX - player.width / 2;
-    }
+    player.x = inputX - player.width / 2;
     keepInBounds();
 }
 
@@ -233,9 +203,8 @@ function keepInBounds() {
 }
 
 // --- GAME LOGIC ---
-
 function spawnApple() {
-    const currentSpeed = 5 + (Math.floor(score / 5) * 0.7);
+    const currentSpeed = 180 + (Math.floor(score / 5) * 30); // Speed in pixels per second
     apples.push({
         x: Math.random() * (canvas.width - 40),
         y: -50,
@@ -246,10 +215,17 @@ function spawnApple() {
 }
 
 function update(timestamp) {
-    if (!gameActive || isPaused) return;
+    if (!gameActive || isPaused) {
+        lastFrameTime = timestamp; // Keep frame time updated even when paused
+        return;
+    }
 
+    // Calculate Delta Time (seconds since last frame)
+    const dt = (timestamp - lastFrameTime) / 1000;
+    lastFrameTime = timestamp;
+
+    // Control Spawning
     let currentSpawnRate = Math.max(400, 1500 - (Math.floor(score / 5) * 150));
-
     if (timestamp - lastSpawnTime > currentSpawnRate) {
         spawnApple();
         lastSpawnTime = timestamp;
@@ -257,7 +233,10 @@ function update(timestamp) {
 
     for (let i = apples.length - 1; i >= 0; i--) {
         let a = apples[i];
-        a.y += a.speed;
+        
+        // Movement is now multiplied by dt (delta time)
+        // This ensures 180px per second regardless of FPS
+        a.y += a.speed * dt;
 
         if (a.y + a.height > player.y && a.y < player.y + player.height &&
             a.x + a.width > player.x && a.x < player.x + player.width) {
@@ -280,7 +259,6 @@ function draw(timestamp) {
     ctx.drawImage(basketImg, player.x, player.y, player.width, player.height);
     apples.forEach(a => ctx.drawImage(appleImg, a.x, a.y, a.width, a.height));
     
-    // Pause Overlay Text
     if (isPaused) {
         ctx.fillStyle = "rgba(0,0,0,0.3)";
         ctx.fillRect(0,0,canvas.width, canvas.height);
@@ -295,6 +273,18 @@ function draw(timestamp) {
 }
 
 // --- MENUS & STORAGE ---
+function togglePause() {
+    if (!gameActive) return;
+    isPaused = !isPaused;
+    canvas.style.filter = isPaused ? "blur(4px) grayscale(50%)" : "none";
+}
+
+function toggleSettings() {
+    const menu = document.getElementById('settingsMenu');
+    menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+}
+
+function updateControlMode(val) { controlMode = val; }
 
 function gameOver() {
     gameActive = false;
@@ -340,7 +330,14 @@ document.getElementById('confirmDelete').onclick = function() {
 };
 
 let imagesLoaded = 0;
-function checkLoad() { if (++imagesLoaded === 2) requestAnimationFrame(draw); }
+function checkLoad() { 
+    if (++imagesLoaded === 2) {
+        requestAnimationFrame((t) => {
+            lastFrameTime = t;
+            draw(t);
+        });
+    } 
+}
 basketImg.onload = checkLoad;
 appleImg.onload = checkLoad;
     </script>
