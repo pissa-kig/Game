@@ -83,10 +83,29 @@
         .save-btn:hover { background: #27ae60; }
         .skip-btn { background: #e67e22; color: white; }
         .skip-btn:hover { background: #d35400; }
+        #creditsBtn {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #f1c40f; /* Gold color */
+    color: #2c3e50;      /* Dark text for contrast */
+    border: 2px solid #d4af37;
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 1000;       /* Ensures it stays above the sidebar */
+    transition: 0.3s;
+}
+
+#creditsBtn:hover {
+    background: #d4af37; /* Slightly darker gold on hover */
+    transform: scale(1.05);
+}
     </style>
 </head>
 <body>
-
+    <button id="creditsBtn" onclick="alert('Game Credits:\nGraphics: basket.png & apple.png\nDeveloper: Gemini AI & You\nPowered by: JavaScript')">Credits</button>
     <div id="sidePanel">
         <h3 style="margin-top: 0; color: #3498db; border-bottom: 2px solid #3498db; padding-bottom: 5px;">Leaderboard</h3>
         <ul id="scoreList"></ul>
