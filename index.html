@@ -159,8 +159,8 @@
 
         function spawnApple() {
             // Difficulty increases with score
-            // Speed starts at 3 and increases by 0.5 for every 5 points
-            const currentSpeed = 3 + (Math.floor(score / 5) * 0.5);
+            // Speed starts at 3 and increases by 0.7 for every 5 points
+            const currentSpeed = 3 + (Math.floor(score / 5) * 0.7);
             
             apples.push({
                 x: Math.random() * (canvas.width - 40),
