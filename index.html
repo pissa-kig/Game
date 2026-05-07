@@ -204,7 +204,7 @@ function keepInBounds() {
 
 // --- GAME LOGIC ---
 function spawnApple() {
-    const currentSpeed = 180 + (Math.floor(score / 5) * 30); // Speed in pixels per second
+    const currentSpeed = 200 + (Math.floor(score / 5) * 50); // Speed in pixels per second
     apples.push({
         x: Math.random() * (canvas.width - 40),
         y: -50,
