@@ -32,6 +32,12 @@
     <h1>Score: <span id="scoreVal">0</span></h1>
     <canvas id="gameCanvas" width="600" height="400"></canvas>
     <p class="info">Catch the apples with your basket!</p>
+    <div id="gameOverMenu" style="display:none; position:absolute; top:50%; left:50%; transform:translate(-50%, -50%); background:rgba(0,0,0,0.9); padding:20px; text-align:center; border:2px solid white; border-radius:10px; z-index:100;">
+    <h2>GAME OVER</h2>
+    <p>Your Score: <span id="finalScore">0</span></p>
+    <input type="text" id="playerName" placeholder="Enter Name" maxlength="10" style="padding:10px; width:150px;"><br><br>
+    <button onclick="submitScore()" style="padding:10px 20px; cursor:pointer;">Submit Score</button>
+</div>
 
     <script>
         const canvas = document.getElementById('gameCanvas');
@@ -105,10 +111,27 @@
 
         function gameOver() {
             gameActive = false;
-            alert("Game Over! You caught " + score + " apples."+" Man you suck at this game!");
-            document.location.reload();
+            document.getElementById('finalScore').innerText = score;
+            document.getElementById('gameOverMenu').style.display = 'block';
+            canvas.style.filter = "blur(5px)"; // Optional visual effect
         }
 
+        function submitScore() {
+            const name = document.getElementById('playerName').value;
+            if (name === "") { alert("Please enter a name!"); return; }
+
+            // Use Fetch API to send data to your PHP script
+            fetch('save_score.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `name=${encodeURIComponent(name)}&score=${score}`
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert("Score Saved!");
+                location.reload(); // Refresh to show the new leaderboard
+            });
+       }
         function draw() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
 
