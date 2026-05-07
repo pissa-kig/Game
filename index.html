@@ -225,7 +225,7 @@ function update(timestamp) {
     lastFrameTime = timestamp;
 
     // Control Spawning
-    let currentSpawnRate = Math.max(400, 1500 - (Math.floor(score / 5) * 150));
+    let currentSpawnRate = Math.max(300, 1200 - (Math.floor(score / 5) * 200));
     if (timestamp - lastSpawnTime > currentSpawnRate) {
         spawnApple();
         lastSpawnTime = timestamp;
