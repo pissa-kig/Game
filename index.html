@@ -111,7 +111,7 @@
     }
 
     canvas {
-        background: #16c6f2;
+        background: transparent;
         border: 4px solid #34495e;
         box-shadow: 0 0 20px rgba(0,0,0,0.5);
         cursor: none;
@@ -196,14 +196,14 @@
         width: 100vw;
         height: 100vh;
         object-fit: contain; /* Keeps the game's aspect ratio perfect */
-        background-color: #16c6f2; /* Keeps your sky blue background */
+        background-color: transparent; /* Keeps your sky blue background */
     }
     
     /* Safari specific fix */
     #gameCanvas:-webkit-full-screen {
         width: 100%;
         height: 100%;
-        background-color: #16c6f2;
+        background-color: transparent;
     }
 
     /* Ensure the container expands to fill the screen */
@@ -213,7 +213,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        background-color: #16c6f2; /* Maintain sky color */
+        background-color: transparent; /* Maintain sky color */
     }
     
     /* Specific styling for the canvas inside fullscreen to prevent blurriness */
@@ -581,7 +581,7 @@ function update(timestamp) {
 }
 
 function draw(timestamp) {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.hight);
     ctx.drawImage(basketImg, player.x, player.y, player.width, player.height);
     apples.forEach(a => ctx.drawImage(appleImg, a.x, a.y, a.width, a.height));
     
@@ -690,10 +690,11 @@ document.getElementById('confirmDelete').onclick = function() {
     closeDeleteModal();
     displayLeaderboard();
 };
-
+const bgImg = new Image();
+bgImg.src = 'bg.png'
 let imagesLoaded = 0;
 function checkLoad() { 
-    if (++imagesLoaded === 2) {
+    if (++imagesLoaded === 3) {
         requestAnimationFrame((t) => {
             lastFrameTime = t;
             draw(t);
@@ -702,6 +703,7 @@ function checkLoad() {
 }
 basketImg.onload = checkLoad;
 appleImg.onload = checkLoad;
+bgImg.onload = checkLoad;
     </script>
 </body>
 </html>
