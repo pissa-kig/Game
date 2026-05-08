@@ -29,6 +29,33 @@
             flex-direction: column;
         }
 
+        /* Animation for the menu popping up */
+        @keyframes menuPop {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+        
+        /* Animation for the glowing border */
+        @keyframes borderGlow {
+            0% { border-color: #f1c40f; box-shadow: 0 0 10px #f1c40f; }
+            50% { border-color: #e67e22; box-shadow: 0 0 25px #e67e22; }
+            100% { border-color: #f1c40f; box-shadow: 0 0 10px #f1c40f; }
+        }
+        
+        #creditsContent {
+            background: #2c3e50;
+            padding: 30px;
+            border-radius: 15px;
+            border: 3px solid #f1c40f;
+            text-align: center;
+            color: white;
+            min-width: 300px;
+            
+            /* Apply the animations */
+            animation: menuPop 0.3s ease-out forwards, 
+                       borderGlow 2s infinite ease-in-out;
+        }
+
         #gameContainer {
             flex-grow: 1;
             display: flex;
@@ -193,21 +220,19 @@
     </div>
 
     <div id="creditsModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:3000; align-items:center; justify-content:center;">
-    <div style="background:#2c3e50; padding:30px; border-radius:15px; border:3px solid #f1c40f; text-align:center; color:white; min-width:300px; box-shadow: 0 0 30px rgba(0,0,0,0.5);">
-        <h2 style="color:#f1c40f; margin-top:0;">GAME CREDITS</h2>
-        
-        <div style="text-align:left; margin: 20px 0; line-height: 1.6;">
-            <p><strong>Graphics:</strong> basket.png & apple.png</p>
-            <p><strong>Developer:</strong> Nicholas Caisse</p>
-            <p><strong>Engine:</strong> HTML5 Canvas & JavaScript</p>
-            <p><strong>Title Name:</strong> Gerardo Nieto</p>
-            <p><strong>Coding Adviser:</strong> Tobe Egbuonu</p>
-            <p><strong>Play Testers:</strong> Tobe Egbuonu, Marco Licon, Gerado Nieto, Pablo Muñiz, Ian Perez</p>
+        <div id="creditsContent">
+            <h2 style="color:#f1c40f; margin-top:0;">GAME CREDITS</h2>
+            <div style="text-align:left; margin: 20px 0; line-height: 1.6;">
+                <p><strong>Graphics:</strong> basket.png & apple.png</p>
+                <p><strong>Developer:</strong> Nicholas Caisse</p>
+                <p><strong>Engine:</strong> HTML5 Canvas & JavaScript</p>
+                <p><strong>Title Name:</strong> Gerardo Nieto</p>
+                <p><strong>Coding Adviser:</strong> Tobe Egbuonu</p>
+                <p><strong>Play Testers:</strong> Tobe Egbuonu, Marco Licon, Gerado Nieto, Pablo Muñiz, Ian Perez</p>
+            </div>
+            <button class="skip-btn" style="width:100%; background:#f1c40f; color:#2c3e50;" onclick="toggleCredits()">Close</button>
         </div>
-
-        <button class="skip-btn" style="width:100%; background:#f1c40f; color:#2c3e50;" onclick="toggleCredits()">Close</button>
     </div>
-</div>
 
 
     <script>
@@ -271,13 +296,19 @@ function updateHighScoreDisplay() {
 // --- CREDITS ---
 function toggleCredits() {
     const modal = document.getElementById('creditsModal');
+    const content = document.getElementById('creditsContent');
+
     if (modal.style.display === 'none' || modal.style.display === '') {
         modal.style.display = 'flex';
-        // Optional: Pause the game if it's currently running
+        
+        // Reset animation by removing and re-adding the class if needed
+        content.style.animation = 'none';
+        content.offsetHeight; // Trigger a "reflow" to restart the animation
+        content.style.animation = null; 
+
         if (gameActive && !isPaused) togglePause();
     } else {
         modal.style.display = 'none';
-        // Optional: Unpause when closing
         if (gameActive && isPaused) togglePause();
     }
 }
