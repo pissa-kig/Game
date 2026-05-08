@@ -28,34 +28,73 @@
             display: flex;
             flex-direction: column;
         }
+        
 
-        /* Animation for the menu popping up */
+        
+        /* The container that holds the rotating border */
+        #creditsContent {
+            position: relative;
+            background: #2c3e50;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            color: white;
+            min-width: 300px;
+            overflow: hidden; /* Keeps the rotating gradient inside the corners */
+            z-index: 1;
+            animation: menuPop 0.3s ease-out forwards;
+        }
+        
+        /* The Rotating Gradient Layer */
+        #creditsContent::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            /* Very light blue gradient */
+            background: conic-gradient(
+                transparent, 
+                rgba(0, 212, 255, 0.8), 
+                transparent 30%
+            );
+            animation: rotateGradient 4s linear infinite;
+            z-index: -2;
+        }
+        
+        /* The Inner Background (to cover the middle of the gradient) */
+        #creditsContent::after {
+            content: "";
+            position: absolute;
+            inset: 4px; /* This creates the "border thickness" */
+            background: #2c3e50;
+            border-radius: 11px;
+            z-index: -1;
+        }
+        
+        /* The Gold Glow Effect */
+        #creditsContent {
+            box-shadow: 0 0 20px rgba(241, 196, 15, 0.4);
+        }
+        
+        /* Animations */
+        @keyframes rotateGradient {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
         @keyframes menuPop {
             from { opacity: 0; transform: scale(0.8); }
             to { opacity: 1; transform: scale(1); }
         }
-        
-        /* Animation for the glowing border */
+
         @keyframes borderGlow {
             0% { border-color: #f1c40f; box-shadow: 0 0 10px #f1c40f; }
             50% { border-color: #e67e22; box-shadow: 0 0 25px #e67e22; }
             100% { border-color: #f1c40f; box-shadow: 0 0 10px #f1c40f; }
         }
         
-        #creditsContent {
-            background: #2c3e50;
-            padding: 30px;
-            border-radius: 15px;
-            border: 3px solid #f1c40f;
-            text-align: center;
-            color: white;
-            min-width: 300px;
-            
-            /* Apply the animations */
-            animation: menuPop 0.3s ease-out forwards, 
-                       borderGlow 2s infinite ease-in-out;
-        }
-
         #gameContainer {
             flex-grow: 1;
             display: flex;
