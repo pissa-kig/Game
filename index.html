@@ -29,7 +29,7 @@
         flex-direction: column;
     }
 
-    /* --- CREDITS WINDOW STYLES --- */
+    /* --- CREDITS WINDOW (DOUBLE BORDER SYSTEM) --- */
     #creditsContent {
         position: relative;
         background: #2c3e50;
@@ -40,15 +40,13 @@
         min-width: 300px;
         overflow: hidden;
         z-index: 1;
-        /* Entrance animation and constant pulsating glow */
+        /* The Outer Gold Frame */
+        border: 3px solid #f1c40f; 
+        /* Animations: Pop-in and the Breathing Gold/Orange Glow */
         animation: menuPop 0.3s ease-out forwards, pulsateGold 2s infinite ease-in-out;
     }
 
-    /* Class added via JS to trigger fade out */
-    .fade-out {
-        animation: menuFadeOut 0.3s ease-in forwards !important;
-    }
-
+    /* The Spinning Blue Laser Shine */
     #creditsContent::before {
         content: "";
         position: absolute;
@@ -58,20 +56,26 @@
         height: 200%;
         background: conic-gradient(
             transparent, 
-            rgba(0, 212, 255, 0.8), 
+            rgba(0, 212, 255, 0.7), 
             transparent 30%
         );
         animation: rotateGradient 4s linear infinite;
-        z-index: -2;
+        z-index: -1;
     }
 
+    /* The Inner Dark Mask (Makes the blue look like a thin line inside the gold) */
     #creditsContent::after {
         content: "";
         position: absolute;
         inset: 4px;
         background: #2c3e50;
-        border-radius: 11px;
+        border-radius: 10px;
         z-index: -1;
+    }
+
+    /* Class for the Closing Animation */
+    .fade-out {
+        animation: menuFadeOut 0.3s ease-in forwards !important;
     }
 
     /* --- ANIMATIONS --- */
@@ -154,7 +158,7 @@
         box-shadow: 0 0 50px rgba(0,0,0,0.8);
     }
 
-    input { padding: 10px; width: 80%; border-radius: 5px; border: none; margin: 15px 0; font-size: 1em; }
+    input { padding: 10px; width: 90%; border-radius: 5px; border: none; margin: 15px 0; font-size: 1em; }
 
     .btn-container { display: flex; gap: 10px; justify-content: center; }
 
