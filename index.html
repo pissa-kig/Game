@@ -202,26 +202,46 @@
     </div>
 
     <div id="gameContainer">
-        <h2 style="color: #ff4d4d; margin: 0; font-size: 2.5em; text-transform: uppercase; letter-spacing: 2px;">Apples and Basket</h2>
-        
-        <h1 style="display: flex; gap: 40px; justify-content: center; align-items: center;">
+    <h2 style="color: #ff4d4d; margin: 0; font-size: 2.5em; text-transform: uppercase; letter-spacing: 2px;">Apples and Basket</h2>
+    
+    <h1 style="display: flex; gap: 40px; justify-content: center; align-items: center;">
         <div>Score: <span id="scoreVal">0</span></div>
         <div style="font-size: 0.6em; color: #f1c40f; opacity: 0.9;">Best: <span id="highScoreVal">0</span></div>
     </h1>
-        <canvas id="gameCanvas" width="600" height="400"></canvas>
-        <p>Catch the Apples!</p>
 
-        <div id="gameOverMenu">
-            <h2 style="color: #e74c3c; margin-top:0; font-size: 2em;">GAME OVER</h2>
-            <p style="font-size: 1.2em;">Final Score: <span id="finalScore">0</span></p>
-            <input type="text" id="playerName" placeholder="Your Name" maxlength="20"><br>
-            
-            <div class="btn-container">
-                <button class="save-btn" onclick="submitScore()">Save & Restart</button>
-                <button class="skip-btn" onclick="discardScore()">Don't Save</button>
+    <div style="position: relative; line-height: 0;">
+        <canvas id="gameCanvas" width="600" height="400"></canvas>
+        
+        <img src="full.png" id="fullscreenBtn" onclick="toggleFullscreen()" 
+             style="position: absolute; top: 10px; right: 10px; width: 30px; height: 30px; cursor: pointer; opacity: 0.7; transition: 0.3s; z-index: 10;"
+             onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'" title="Toggle Fullscreen">
+    </div>
+
+    <p>Catch the Apples!</p>
+
+    <div id="gameOverMenu">
+        <h2 style="color: #e74c3c; margin-top:0; font-size: 2em;">GAME OVER</h2>
+        <p style="font-size: 1.2em;">Final Score: <span id="finalScore">0</span> [cite: 2]</p>
+        
+        <input type="text" id="playerName" placeholder="Enter Name" maxlength="20" 
+               style="padding:10px; width:90%; border-radius:5px; border:none; margin: 15px 0; font-size: 1em;">
+        
+        <div class="btn-container">
+            <button class="save-btn" onclick="submitScore()">Save & Restart [cite: 3]</button>
+            <button class="skip-btn" onclick="discardScore()">Don't Save [cite: 3]</button>
+        </div>
+    </div>
+
+    <div id="discardModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; align-items:center; justify-content:center;">
+        <div style="background:#2c3e50; padding:20px; border-radius:10px; border:2px solid #e67e22; text-align:center; color:white;">
+            <p style="font-size:1.1em;">Are you sure? Your score will not be saved.</p>
+            <div class="btn-container" style="display:flex; gap:10px; justify-content:center; margin-top:15px;">
+                <button class="skip-btn" onclick="location.reload()">Yes, Discard</button>
+                <button class="save-btn" onclick="closeDiscardModal()">No, Go Back</button>
             </div>
         </div>
     </div>
+</div>
 
     <div id="settingsMenu" style="display:none; position:absolute; top:50%; right:60px; transform:translateY(-50%); background:rgba(0,0,0,0.9); padding:20px; border:2px solid #3498db; border-radius:10px; z-index:1002; color:white;">
         <h3 style="margin-top:0;">Controls</h3>
