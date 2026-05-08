@@ -611,16 +611,29 @@ function update(timestamp) {
 
 function draw(timestamp) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    if (isPaused) {
+        // Apply blur only to the game elements drawn below
+        ctx.filter = "blur(4px) grayscale(50%)";
+    } else {
+        ctx.filter = "none";
+    }
+
+    // Draw game objects (these will be blurred if paused)
     ctx.drawImage(basketImg, player.x, player.y, player.width, player.height);
     apples.forEach(a => ctx.drawImage(appleImg, a.x, a.y, a.width, a.height));
-    
+
     if (isPaused) {
+        // Reset filter to 'none' so the UI text is NOT blurred
+        ctx.filter = "none";
+        
         ctx.fillStyle = "rgba(0,0,0,0.3)";
-        ctx.fillRect(0,0,canvas.width, canvas.height);
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
         ctx.fillStyle = "white";
         ctx.font = "bold 40px Arial";
         ctx.textAlign = "center";
-        ctx.fillText("PAUSED", canvas.width/2, canvas.height/2);
+        ctx.fillText("PAUSED", canvas.width / 2, canvas.height / 2);
     }
 
     update(timestamp);
@@ -631,7 +644,7 @@ function draw(timestamp) {
 function togglePause() {
     if (!gameActive) return;
     isPaused = !isPaused;
-    canvas.style.filter = isPaused ? "blur(4px) grayscale(50%)" : "none";
+    canvas.style.filter = isPaused ? "blur(4px) grayscale(30%)" : "none";
 }
 
 function toggleSettings() {
