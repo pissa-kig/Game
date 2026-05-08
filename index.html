@@ -182,7 +182,6 @@
             transform: scale(1.05);
         }
 
-        /* Fullscreen Area logic */
         #fullscreenArea:fullscreen {
             width: 100vw;
             height: 100vh;
@@ -243,7 +242,7 @@
         <div style="background:#2c3e50; padding:20px; border-radius:10px; border:2px solid #e67e22; text-align:center; color:white;">
             <p>Are you sure? Your score will not be saved.</p>
             <div class="btn-container">
-                <button class="skip-btn" onclick="resetGame()">Yes, Discard</button>
+                <button class="skip-btn" onclick="location.reload()">Yes, Discard</button>
                 <button class="save-btn" onclick="closeDiscardModal()">No, Go Back</button>
             </div>
         </div>
@@ -369,18 +368,6 @@
             player.y = canvas.height - 60;
         });
 
-        function resetGame() {
-            score = 0;
-            scoreElement.innerText = score;
-            apples = [];
-            gameActive = true;
-            document.getElementById('gameOverMenu').style.display = 'none';
-            document.getElementById('discardModal').style.display = 'none';
-            player.x = canvas.width / 2 - player.width / 2;
-            player.y = canvas.height - 60;
-            lastSpawnTime = performance.now();
-        }
-
         function spawnApple() {
             const currentSpeed = 250 + (Math.floor(score / 5) * 50);
             apples.push({
@@ -469,10 +456,7 @@
                 highScores = highScores.slice(0, 10);
                 localStorage.setItem('appleScores', JSON.stringify(highScores));
             }
-            displayLeaderboard();
-            updateHighScoreDisplay();
-            nameInput.value = "";
-            resetGame();
+            location.reload(); // REVERTED: Reloads page
         }
 
         function discardScore() {
