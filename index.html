@@ -131,7 +131,7 @@
     </style>
 </head>
 <body>
-        <button id="creditsBtn" onclick="alert('Game Credits:\nGraphics: basket.png & apple.png\nDeveloper: Nicholas Caisse\nTitle: Gerardo Nieto\nCoding Adviser: Tobe Egbuonu\nPlaytesters: Tobe Egbuonu, Marco Licon, Gerado Nieto, Pablo Muñiz, Ian Perez\nPowered by: JavaScript')">Credits</button>
+        <button id="creditsBtn" onclick="toggleCredits()">Credits</button>
 
     <img src="pause.png" id="pauseBtn" onclick="togglePause()" alt="Pause" style="position: absolute; bottom: 10px; right: 10px; width: 75px; cursor: pointer; z-index: 1001;">
 
@@ -192,6 +192,23 @@
         </div>
     </div>
 
+    <div id="creditsModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:3000; align-items:center; justify-content:center;">
+    <div style="background:#2c3e50; padding:30px; border-radius:15px; border:3px solid #f1c40f; text-align:center; color:white; min-width:300px; box-shadow: 0 0 30px rgba(0,0,0,0.5);">
+        <h2 style="color:#f1c40f; margin-top:0;">GAME CREDITS</h2>
+        
+        <div style="text-align:left; margin: 20px 0; line-height: 1.6;">
+            <p><strong>Graphics:</strong> basket.png & apple.png</p>
+            <p><strong>Developer:</strong> Nicholas Caisse</p>
+            <p><strong>Engine:</strong> HTML5 Canvas & JavaScript</p>
+            <p><strong>Title Name:</strong> Gerardo Nieto</p>
+            <p><strong>Coding Adviser:</strong> Tobe Egbuonu</p>
+            <p><strong>Play Testers:</strong> Tobe Egbuonu, Marco Licon, Gerado Nieto, Pablo Muñiz, Ian Perez</p>
+        </div>
+
+        <button class="skip-btn" style="width:100%; background:#f1c40f; color:#2c3e50;" onclick="toggleCredits()">Close</button>
+    </div>
+</div>
+
 
     <script>
         const canvas = document.getElementById('gameCanvas');
@@ -250,6 +267,19 @@ function updateHighScoreDisplay() {
     const highScoreDisplay = document.getElementById('highScoreVal');
     highScoreDisplay.innerText = topScore;
     highScoreDisplay.style.color = "#f1c40f"; // Reset to Gold on load
+}
+// --- CREDITS ---
+function toggleCredits() {
+    const modal = document.getElementById('creditsModal');
+    if (modal.style.display === 'none' || modal.style.display === '') {
+        modal.style.display = 'flex';
+        // Optional: Pause the game if it's currently running
+        if (gameActive && !isPaused) togglePause();
+    } else {
+        modal.style.display = 'none';
+        // Optional: Unpause when closing
+        if (gameActive && isPaused) togglePause();
+    }
 }
 // --- GAME LOGIC ---
 function spawnApple() {
