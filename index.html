@@ -259,6 +259,33 @@
 #fullscreenArea:fullscreen #rightControlPanel {
     width: 80px;
 }
+
+/* Container for title and dropdown */
+.scoreboard-header {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    border-bottom: 2px solid #3498db;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+/* Styling the dropdown itself */
+#sortOptions {
+    width: 100%;
+    background: #34495e;
+    color: white;
+    border: 1px solid #3498db;
+    border-radius: 4px;
+    padding: 4px;
+    cursor: pointer;
+    font-size: 0.85em;
+    outline: none;
+}
+
+#sortOptions:hover {
+    background: #2c3e50;
+}
         
 </style>
 </head>
@@ -268,9 +295,19 @@
     <img src="pause.png" id="pauseBtn" onclick="togglePause()" alt="Pause" style="position: absolute; bottom: 45px; right: 10px; width: 75px; cursor: pointer; z-index: 1001;">
 
     <div id="sidePanel">
-        <h3 style="margin-top: 0; color: #3498db; border-bottom: 2px solid #3498db; padding-bottom: 5px;">Your Scores</h3>
-        <ul id="scoreList">
-            </ul>
+        <div class="scoreboard-header">
+            <h3 style="margin: 0; color: #3498db;">Your Scores</h3>
+            <div class="sorting-container">
+                <select id="sortOptions" onchange="displayLeaderboard()">
+                    <option value="recent">Submission</option>
+                    <option value="high">Score ></option>
+                    <option value="low">Score <</option>
+                    <option value="az">A-Z</option>
+                    <option value="za">Z-A</option>
+                </select>
+            </div>
+        </div>
+        <ul id="scoreList"></ul>
     </div>
 
     <div id="gameContainer">
@@ -614,9 +651,15 @@ function gameOver() {
 function submitScore() {
     const name = document.getElementById('playerName').value || "Anonymous";
     let highScores = JSON.parse(localStorage.getItem('appleScores')) || [];
-    highScores.push({ name: name, score: score });
-    highScores.sort((a, b) => b.score - a.score);
-    localStorage.setItem('appleScores', JSON.stringify(highScores.slice(0, 10)));
+    
+    // Add score with a timestamp
+    highScores.push({ 
+        name: name, 
+        score: score, 
+        timestamp: Date.now() 
+    });
+    
+    localStorage.setItem('appleScores', JSON.stringify(highScores));
     location.reload(); 
 }
 
@@ -631,15 +674,35 @@ function closeDiscardModal() {
 }
         
 function displayLeaderboard() {
-    const highScores = JSON.parse(localStorage.getItem('appleScores')) || [];
-    
+    let highScores = JSON.parse(localStorage.getItem('appleScores')) || [];
+    const sortType = document.getElementById('sortOptions').value;
+
+    // Apply sorting based on dropdown selection
+    switch (sortType) {
+        case 'az':
+            highScores.sort((a, b) => a.name.localeCompare(b.name));
+            break;
+        case 'za':
+            highScores.sort((a, b) => b.name.localeCompare(a.name));
+            break;
+        case 'high':
+            highScores.sort((a, b) => b.score - a.score);
+            break;
+        case 'low':
+            highScores.sort((a, b) => a.score - b.score);
+            break;
+        case 'recent':
+            highScores.sort((a, b) => b.timestamp - a.timestamp);
+            break;
+    }
+
     scoreListUl.innerHTML = highScores.map((entry, index) => 
         `<li onclick="askDeleteScore(${index})" title="Click to delete">
             <span>${entry.name}</span>
             <strong>${entry.score}</strong>
         </li>`
     ).join('');
-    
+
     if (highScores.length === 0) {
         scoreListUl.innerHTML = "<li style='opacity: 0.5; justify-content: center;'>No scores yet</li>";
     }
