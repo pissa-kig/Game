@@ -545,12 +545,13 @@ function spawnApple() {
     });
 }
 
-// Update your mouse/touch movement to clamp to dynamic canvas.width
 function handleMove(newX) {
-    // The usable width is the canvas width
-    // Since the panel is outside the canvas in HTML, the canvas itself is the boundary
-    player.x = Math.max(0, Math.min(newX - player.width / 2, canvas.width - player.width));
-}    
+    // If the game is paused or over, exit the function immediately
+    if (isPaused || !gameActive) return;  
+
+    // Otherwise, update the basket position
+    player.x = Math.max(0, Math.min(newX - player.width / 2, canvas.width - player.width));  
+} 
 // --- GAME LOGIC ---
 function spawnApple() {
     const currentSpeed = 200 + (Math.floor(score / 5) * 50);
@@ -613,37 +614,41 @@ function draw(timestamp) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     if (isPaused) {
-        // Apply blur only to the game elements drawn below
+        // Apply blur and grayscale to everything drawn next
         ctx.filter = "blur(4px) grayscale(50%)";
     } else {
         ctx.filter = "none";
     }
 
-    // Draw game objects (these will be blurred if paused)
-    ctx.drawImage(basketImg, player.x, player.y, player.width, player.height);
-    apples.forEach(a => ctx.drawImage(appleImg, a.x, a.y, a.width, a.height));
+    // 1. Draw Background (Blurred if paused)
+    // Note: Ensure 'background' image object is defined as shown in Method 2 earlier
+    ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+
+    // 2. Draw Game Objects (Blurred if paused)
+    ctx.drawImage(basketImg, player.x, player.y, player.width, player.height);  
+    apples.forEach(a => ctx.drawImage(appleImg, a.x, a.y, a.width, a.height));  
 
     if (isPaused) {
-        // Reset filter to 'none' so the UI text is NOT blurred
+        // 3. Reset filter to 'none' so the UI text remains SHARP
         ctx.filter = "none";
         
-        ctx.fillStyle = "rgba(0,0,0,0.3)";
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = "rgba(0,0,0,0.3)";  
+        ctx.fillRect(0, 0, canvas.width, canvas.height);  
         
-        ctx.fillStyle = "white";
-        ctx.font = "bold 40px Arial";
-        ctx.textAlign = "center";
-        ctx.fillText("PAUSED", canvas.width / 2, canvas.height / 2);
+        ctx.fillStyle = "white";  
+        ctx.font = "bold 40px Arial";  
+        ctx.textAlign = "center";  
+        ctx.fillText("PAUSED", canvas.width / 2, canvas.height / 2);  
     }
 
-    update(timestamp);
-    requestAnimationFrame(draw);
+    update(timestamp);  
+    requestAnimationFrame(draw);  
 }
 
 // --- MENUS & STORAGE ---
 function togglePause() {
-    if (!gameActive) return;
-    isPaused = !isPaused;
+    if (!gameActive) return;  
+    isPaused = !isPaused;  
 }
 
 function toggleSettings() {
