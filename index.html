@@ -201,6 +201,23 @@
         height: 100%;
         background-color: #16c6f2;
     }
+
+    /* Ensure the container expands to fill the screen */
+    #fullscreenArea:fullscreen {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: #16c6f2; /* Maintain sky color */
+    }
+    
+    /* Specific styling for the canvas inside fullscreen to prevent blurriness */
+    #fullscreenArea:fullscreen canvas {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
 </style>
 </head>
 <body>
@@ -217,33 +234,33 @@
     </div>
 
     <div id="gameContainer">
-    <h2 style="color: #ff4d4d; margin: 0; font-size: 2.5em; text-transform: uppercase; letter-spacing: 2px;">Apples and Basket</h2>
+    <h2 style="color: #ff4d4d; margin: 0; font-size: 2.5em; text-transform: uppercase; letter-spacing: 2px;">Apples and Basket [cite: 1]</h2>
     
     <h1 style="display: flex; gap: 40px; justify-content: center; align-items: center;">
         <div>Score: <span id="scoreVal">0</span></div>
         <div style="font-size: 0.6em; color: #f1c40f; opacity: 0.9;">Best: <span id="highScoreVal">0</span></div>
     </h1>
 
-    <div style="position: relative; line-height: 0;">
+    <div id="fullscreenArea" style="position: relative; line-height: 0; background: #16c6f2;">
         <canvas id="gameCanvas" width="600" height="400"></canvas>
         
         <img src="full.png" id="fullscreenBtn" onclick="toggleFullscreen()" 
-             style="position: absolute; top: 10px; right: 10px; width: 30px; height: 30px; cursor: pointer; opacity: 0.7; transition: 0.3s; z-index: 10;"
+             style="position: absolute; top: 10px; right: 10px; width: 30px; height: 30px; cursor: pointer; opacity: 0.7; transition: 0.3s; z-index: 1000;"
              onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'" title="Toggle Fullscreen">
     </div>
-
+        
     <p>Catch the Apples!</p>
 
     <div id="gameOverMenu">
-        <h2 style="color: #e74c3c; margin-top:0; font-size: 2em;">GAME OVER  </h2>
-        <p style="font-size: 1.2em;">Final Score: <span id="finalScore">0</span>  </p>
+        <h2 style="color: #e74c3c; margin-top:0; font-size: 2em;">GAME OVER</h2>
+        <p style="font-size: 1.2em;">Final Score: <span id="finalScore">0</span> </p>
         
         <input type="text" id="playerName" placeholder="Enter Name" maxlength="20" 
                style="padding:10px; width:90%; border-radius:5px; border:none; margin: 15px 0; font-size: 1em;">
         
         <div class="btn-container">
-            <button class="save-btn" onclick="submitScore()">Save & Restart  </button>
-            <button class="skip-btn" onclick="discardScore()">Don't Save  </button>
+            <button class="save-btn" onclick="submitScore()">Save & Restart </button>
+            <button class="skip-btn" onclick="discardScore()">Don't Save </button>
         </div>
     </div>
 
@@ -394,41 +411,42 @@ function toggleCredits() {
 }
 // --- FULL SCREEN ---
         function toggleFullscreen() {
-    const canvas = document.getElementById('gameCanvas');
+    // Target the container instead of just the canvas
+    const area = document.getElementById('fullscreenArea');
 
     if (!document.fullscreenElement) {
-        // Enter Fullscreen
-        if (canvas.requestFullscreen) {
-            canvas.requestFullscreen();
-        } else if (canvas.webkitRequestFullscreen) { /* Safari */
-            canvas.webkitRequestFullscreen();
-        } else if (canvas.msRequestFullscreen) { /* IE11 */
-            canvas.msRequestFullscreen();
+        if (area.requestFullscreen) {
+            area.requestFullscreen();
+        } else if (area.webkitRequestFullscreen) {
+            area.webkitRequestFullscreen();
         }
     } else {
-        // Exit Fullscreen
         if (document.exitFullscreen) {
             document.exitFullscreen();
         }
     }
 }
 
-// Listen for fullscreen changes to resize the canvas resolution
+// Adjust canvas resolution when the container changes size
 document.addEventListener('fullscreenchange', () => {
     const canvas = document.getElementById('gameCanvas');
+    const area = document.getElementById('fullscreenArea');
+    
     if (document.fullscreenElement) {
-        // Update canvas resolution to match screen size
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
+        // Ensure the button is still clearly visible on high-res screens
+        document.getElementById('fullscreenBtn').style.width = "40px";
+        document.getElementById('fullscreenBtn').style.height = "40px";
     } else {
-        // Return to original fixed size
         canvas.width = 600;
         canvas.height = 400;
+        document.getElementById('fullscreenBtn').style.width = "30px";
+        document.getElementById('fullscreenBtn').style.height = "30px";
     }
-    // Reposition player to the new bottom
-    player.y = canvas.height - 60; 
+    // Update player position for the new floor height
+    player.y = canvas.height - 60;
 });
-
 // Fix spawnApple to use dynamic canvas width
 function spawnApple() {
     const currentSpeed = 250 + (Math.floor(score / 5) * 50); 
