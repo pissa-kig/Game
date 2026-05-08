@@ -197,8 +197,6 @@
         height: 100vh;
         object-fit: contain; /* Keeps the game's aspect ratio perfect */
         background-color: #16c6f2; /* Keeps your sky blue background */
-        cursor: none
-        flex-grow: 1
     }
     
     /* Safari specific fix */
@@ -232,6 +230,25 @@
     #rightPanel {
         cursor: default; /* Shows the standard arrow cursor over the panel */
     }
+
+    #rightControlPanel {
+    cursor: default !important; /* Show arrow cursor on the side bar */
+}
+
+#rightControlPanel img:hover {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
+#gameCanvas {
+    cursor: none; /* Hide cursor only on the playable area */
+}
+
+/* Ensure the panel scales nicely in fullscreen */
+#fullscreenArea:fullscreen #rightControlPanel {
+    width: 80px;
+}
+        
 </style>
 </head>
 <body>
@@ -248,52 +265,56 @@
     </div>
 
     <div id="gameContainer">
-        <h2 style="color: #ff4d4d; margin: 0; font-size: 2.5em; text-transform: uppercase; letter-spacing: 2px;">Apples and Basket</h2>
-        
-        <h1 style="display: flex; gap: 40px; justify-content: center; align-items: center;">
-            <div>Score: <span id="scoreVal">0</span></div>
-            <div style="font-size: 0.6em; color: #f1c40f; opacity: 0.9;">Best: <span id="highScoreVal">0</span></div>
-        </h1>
-    <!-- Fullscreenarea-->
-        <div id="fullscreenArea" style="position: relative; line-height: 0; background: #16c6f2;">
-            <canvas id="gameCanvas" width="600" height="400"></canvas>
-            
-            <div id="rightPanel" style="width: 60px; background: rgba(0,0,0,0.5); display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 10px 0; border-left: 2px solid #34495e; z-index: 1001;">
-                <img src="full.png" id="fullscreenBtn" onclick="toggleFullscreen()" 
-                     style="width: 35px; height: 35px; cursor: pointer; opacity: 0.8;" 
-                     title="Toggle Fullscreen">
-                
-                <img src="settings.png" id="settingsIcon" onclick="toggleSettings()" 
-                     style="width: 40px; height: 40px; cursor: pointer; opacity: 0.8;">
-        
-                <img src="pause.png" id="pauseBtn" onclick="togglePause()" 
-                     style="width: 45px; height: 45px; cursor: pointer; opacity: 0.8;">
-            </div>
+    <h2 style="color: #ff4d4d; margin: 0; font-size: 2.5em; text-transform: uppercase; letter-spacing: 2px;">Apples and Basket</h2>
     
-            <div id="gameOverMenu">
-                <h2 style="color: #e74c3c; margin-top:0; font-size: 2em;">GAME OVER</h2>
-                <p style="font-size: 1.2em;">Final Score: <span id="finalScore">0</span></p>
-                
-                <input type="text" id="playerName" placeholder="Enter Name" maxlength="20" 
-                       style="padding:10px; width:90%; border-radius:5px; border:none; margin: 15px 0; font-size: 1em;">
-                
-                <div class="btn-container">
-                    <button class="save-btn" onclick="submitScore()">Save & Restart </button>
-                    <button class="skip-btn" onclick="discardScore()">Don't Save </button>
+    <h1 style="display: flex; gap: 40px; justify-content: center; align-items: center;">
+        <div>Score: <span id="scoreVal">0</span></div>
+        <div style="font-size: 0.6em; color: #f1c40f; opacity: 0.9;">Best: <span id="highScoreVal">0</span></div>
+    </h1>
+
+    <div id="fullscreenArea" style="position: relative; display: flex; flex-direction: row; background: #16c6f2; border: 4px solid #34495e; line-height: 0;">
+        
+        <canvas id="gameCanvas" width="600" height="400" style="border: none; flex-grow: 1;"></canvas>
+        
+        <div id="rightPanel" style="width: 60px; background: rgba(0,0,0,0.5); display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 10px 0; border-left: 2px solid #34495e; z-index: 1001; cursor: default;">
+            <img src="full.png" id="fullscreenBtn" onclick="toggleFullscreen()" 
+                 style="width: 35px; height: 35px; cursor: pointer; opacity: 0.8; transition: 0.3s;" 
+                 onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'" title="Toggle Fullscreen">
+            
+            <img src="settings.png" id="settingsIcon" onclick="toggleSettings()" 
+                 style="width: 40px; height: 40px; cursor: pointer; opacity: 0.8;"
+                 onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">
+
+            <img src="pause.png" id="pauseBtn" onclick="togglePause()" 
+                 style="width: 45px; height: 45px; cursor: pointer; opacity: 0.8;"
+                 onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">
+        </div>
+
+        <div id="gameOverMenu" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.95); padding: 30px; text-align: center; border: 3px solid #e74c3c; border-radius: 15px; z-index: 2000; min-width: 250px;">
+            <h2 style="color: #e74c3c; margin-top:0; font-size: 2em;">GAME OVER</h2>
+            <p style="font-size: 1.2em;">Final Score: <span id="finalScore">0</span></p>
+            
+            <input type="text" id="playerName" placeholder="Enter Name" maxlength="20" 
+                   style="padding:10px; width:90%; border-radius:5px; border:none; margin: 15px 0; font-size: 1em;">
+            
+            <div class="btn-container" style="display: flex; gap: 10px; justify-content: center;">
+                <button class="save-btn" style="background: #2ecc71; color: white; padding: 12px 20px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;" onclick="submitScore()">Save & Restart</button>
+                <button class="skip-btn" style="background: #f70c0c; color: white; padding: 12px 20px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer;" onclick="discardScore()">Don't Save</button>
+            </div>
+        </div>
+
+        <div id="discardModal" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:3000; align-items:center; justify-content:center; line-height: normal;">
+            <div style="background:#2c3e50; padding:20px; border-radius:10px; border:2px solid #e67e22; text-align:center; color:white;">
+                <p style="font-size:1.1em;">Are you sure? Your score will not be saved.</p>
+                <div class="btn-container" style="display:flex; gap:10px; justify-content:center; margin-top:15px;">
+                    <button class="skip-btn" style="background: #f70c0c; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer;" onclick="location.reload()">Yes, Discard</button>
+                    <button class="save-btn" style="background: #2ecc71; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer;" onclick="closeDiscardModal()">No, Go Back</button>
                 </div>
             </div>
-            <div id="discardModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; align-items:center; justify-content:center;">
-                <div style="background:#2c3e50; padding:20px; border-radius:10px; border:2px solid #e67e22; text-align:center; color:white;">
-                    <p style="font-size:1.1em;">Are you sure? Your score will not be saved.</p>
-                    <div class="btn-container" style="display:flex; gap:10px; justify-content:center; margin-top:15px;">
-                        <button class="skip-btn" onclick="location.reload()">Yes, Discard</button>
-                        <button class="save-btn" onclick="closeDiscardModal()">No, Go Back</button>
-                    </div>
-                </div>
-            </div>
-        </div>     
-        <p>Catch the Apples!</p>
-    </div>
+        </div>
+    </div>     
+    <p>Catch the Apples!</p>
+</div>
 
     <div id="settingsMenu" style="display:none; position:absolute; top:50%; right:60px; transform:translateY(-50%); background:rgba(0,0,0,0.9); padding:20px; border:2px solid #3498db; border-radius:10px; z-index:1002; color:white;">
         <h3 style="margin-top:0;">Controls</h3>
@@ -437,24 +458,38 @@ function toggleCredits() {
 }
 
 // Adjust canvas resolution when the container changes size
+// Adjust canvas resolution and layout when the container enters or exits fullscreen
 document.addEventListener('fullscreenchange', () => {
     const canvas = document.getElementById('gameCanvas');
     const area = document.getElementById('fullscreenArea');
+    const fullscreenBtn = document.getElementById('fullscreenBtn');
     
+    // Define panel widths for different modes
+    const panelWidth = document.fullscreenElement ? 80 : 60;
+
     if (document.fullscreenElement) {
-        canvas.width = window.innerWidth;
+        // 1. Resize canvas to fill the screen minus the width of the right panel
+        canvas.width = window.innerWidth - panelWidth;
         canvas.height = window.innerHeight;
-        // Ensure the button is still clearly visible on high-res screens
-        document.getElementById('fullscreenBtn').style.width = "40px";
-        document.getElementById('fullscreenBtn').style.height = "40px";
+
+        // 2. Scale up UI icons for better visibility on high-res screens 
+        fullscreenBtn.style.width = "40px";
+        fullscreenBtn.style.height = "40px";
     } else {
+        // 1. Reset to original dimensions when exiting fullscreen 
         canvas.width = 600;
         canvas.height = 400;
-        document.getElementById('fullscreenBtn').style.width = "30px";
-        document.getElementById('fullscreenBtn').style.height = "30px";
+
+        // 2. Reset UI icon sizes 
+        fullscreenBtn.style.width = "30px";
+        fullscreenBtn.style.height = "30px";
     }
-    // Update player position for the new floor height
-    player.y = canvas.height - 60;
+
+    // 3. Update player position so the basket stays on the floor of the new height 
+    player.y = canvas.height - 60; 
+
+    // 4. Clear any existing apples to prevent "teleporting" glitches during resize
+    apples = []; 
 });
 // Fix spawnApple to use dynamic canvas width
 function spawnApple() {
