@@ -611,40 +611,46 @@ function update(timestamp) {
 }
 
 function draw(timestamp) {
+    // 1. Clear the canvas for the new frame
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    // 2. Set the Filter State
     if (isPaused) {
-        // Apply blur and grayscale to everything drawn next
+        // Apply blur and grayscale to everything drawn until the filter is reset
         ctx.filter = "blur(4px) grayscale(50%)";
     } else {
+        // Normal gameplay: no filters applied
         ctx.filter = "none";
     }
 
-    // 1. Draw Background (Blurred if paused)
-    // Note: Ensure 'background' image object is defined as shown in Method 2 earlier
+    // 3. Draw Background Image (Blurred if paused)
+    // This assumes you have defined a 'background' image object in your code
     ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
 
-    // 2. Draw Game Objects (Blurred if paused)
-    ctx.drawImage(basketImg, player.x, player.y, player.width, player.height);  
-    apples.forEach(a => ctx.drawImage(appleImg, a.x, a.y, a.width, a.height));  
+    // 4. Draw Game Objects (Blurred if paused)
+    ctx.drawImage(basketImg, player.x, player.y, player.width, player.height);
+    apples.forEach(a => ctx.drawImage(appleImg, a.x, a.y, a.width, a.height));
 
+    // 5. Draw UI Overlay
     if (isPaused) {
-        // 3. Reset filter to 'none' so the UI text remains SHARP
+        // IMPORTANT: Reset filter to 'none' so the UI text is NOT blurred
         ctx.filter = "none";
         
-        ctx.fillStyle = "rgba(0,0,0,0.3)";  
-        ctx.fillRect(0, 0, canvas.width, canvas.height);  
+        // Darken the screen slightly for contrast
+        ctx.fillStyle = "rgba(0,0,0,0.3)";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        ctx.fillStyle = "white";  
-        ctx.font = "bold 40px Arial";  
-        ctx.textAlign = "center";  
-        ctx.fillText("PAUSED", canvas.width / 2, canvas.height / 2);  
+        // Draw the sharp "PAUSED" text
+        ctx.fillStyle = "white";
+        ctx.font = "bold 40px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText("PAUSED", canvas.width / 2, canvas.height / 2);
     }
 
-    update(timestamp);  
-    requestAnimationFrame(draw);  
+    // 6. Proceed with game logic and next frame request
+    update(timestamp);
+    requestAnimationFrame(draw);
 }
-
 // --- MENUS & STORAGE ---
 function togglePause() {
     if (!gameActive) return;  
