@@ -148,14 +148,18 @@
 
     #gameOverMenu {
         display: none;
-        position: absolute;
+        position: absolute; /* Relative to fullscreenArea */
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%); /* Perfectly center the menu */
         background: rgba(0, 0, 0, 0.95);
         padding: 30px;
         text-align: center;
         border: 3px solid #e74c3c;
         border-radius: 15px;
-        z-index: 100;
+        z-index: 2000; /* Higher than the canvas and fullscreen button */
         box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        min-width: 250px;
     }
 
     input { padding: 10px; width: 90%; border-radius: 5px; border: none; margin: 15px 0; font-size: 1em; }
@@ -234,7 +238,7 @@
     </div>
 
     <div id="gameContainer">
-    <h2 style="color: #ff4d4d; margin: 0; font-size: 2.5em; text-transform: uppercase; letter-spacing: 2px;">Apples and Basket [cite: 1]</h2>
+    <h2 style="color: #ff4d4d; margin: 0; font-size: 2.5em; text-transform: uppercase; letter-spacing: 2px;">Apples and Basket</h2>
     
     <h1 style="display: flex; gap: 40px; justify-content: center; align-items: center;">
         <div>Score: <span id="scoreVal">0</span></div>
@@ -247,22 +251,22 @@
         <img src="full.png" id="fullscreenBtn" onclick="toggleFullscreen()" 
              style="position: absolute; top: 10px; right: 10px; width: 30px; height: 30px; cursor: pointer; opacity: 0.7; transition: 0.3s; z-index: 1000;"
              onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.7'" title="Toggle Fullscreen">
+
+        <div id="gameOverMenu">
+            <h2 style="color: #e74c3c; margin-top:0; font-size: 2em;">GAME OVER [cite: 3]</h2>
+            <p style="font-size: 1.2em;">Final Score: <span id="finalScore">0</span> [cite: 2]</p>
+            
+            <input type="text" id="playerName" placeholder="Enter Name" maxlength="20" 
+                   style="padding:10px; width:90%; border-radius:5px; border:none; margin: 15px 0; font-size: 1em;">
+            
+            <div class="btn-container">
+                <button class="save-btn" onclick="submitScore()">Save & Restart [cite: 3]</button>
+                <button class="skip-btn" onclick="discardScore()">Don't Save [cite: 3]</button>
+            </div>
+        </div>
     </div>
         
     <p>Catch the Apples!</p>
-
-    <div id="gameOverMenu">
-        <h2 style="color: #e74c3c; margin-top:0; font-size: 2em;">GAME OVER</h2>
-        <p style="font-size: 1.2em;">Final Score: <span id="finalScore">0</span> </p>
-        
-        <input type="text" id="playerName" placeholder="Enter Name" maxlength="20" 
-               style="padding:10px; width:90%; border-radius:5px; border:none; margin: 15px 0; font-size: 1em;">
-        
-        <div class="btn-container">
-            <button class="save-btn" onclick="submitScore()">Save & Restart </button>
-            <button class="skip-btn" onclick="discardScore()">Don't Save </button>
-        </div>
-    </div>
 
     <div id="discardModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; align-items:center; justify-content:center;">
         <div style="background:#2c3e50; padding:20px; border-radius:10px; border:2px solid #e67e22; text-align:center; color:white;">
@@ -557,8 +561,8 @@ function updateControlMode(val) { controlMode = val; }
 function gameOver() {
     gameActive = false;
     document.getElementById('finalScore').innerText = score;
-    document.getElementById('gameOverMenu').style.display = 'block';
-    canvas.style.filter = "blur(8px)";
+    const menu = document.getElementById('gameOverMenu');
+    menu.style.display = 'block'; // Or 'flex' if you want to use flex centering
 }
 
 function submitScore() {
