@@ -340,14 +340,15 @@ function toggleCredits() {
     if (modal.style.display === 'none' || modal.style.display === '') {
         modal.style.display = 'flex';
         
-        // Reset animation by removing and re-adding the class if needed
+        // Restart the 'menuPop' animation specifically
         content.style.animation = 'none';
-        content.offsetHeight; // Trigger a "reflow" to restart the animation
-        content.style.animation = null; 
+        content.offsetHeight; // The "magic" line that forces the browser to notice the change
+        content.style.animation = ''; // Clears the inline 'none' so the CSS takes over again
 
         if (gameActive && !isPaused) togglePause();
     } else {
         modal.style.display = 'none';
+        // Only unpause if the game was actually running before
         if (gameActive && isPaused) togglePause();
     }
 }
