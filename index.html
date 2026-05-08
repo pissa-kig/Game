@@ -271,8 +271,8 @@
     <div id="discardModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; align-items:center; justify-content:center;">
         <div style="background:#2c3e50; padding:20px; border-radius:10px; border:2px solid #e67e22; text-align:center; color:white;">
             <p style="font-size:1.1em;">Are you sure? Your score will not be saved.</p>
-            <div class="btn-container" style="display:flex; gap:10px; justify-content:center; margin-top:15px;">
-                <button class="skip-btn" onclick="location.reload()">Yes, Discard</button>
+            <div class="btn-container">
+                <button class="skip-btn" onclick="resetGame()">Yes, Discard</button>
                 <button class="save-btn" onclick="closeDiscardModal()">No, Go Back</button>
             </div>
         </div>
@@ -282,8 +282,8 @@
     <div id="discardModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; align-items:center; justify-content:center;">
         <div style="background:#2c3e50; padding:20px; border-radius:10px; border:2px solid #e67e22; text-align:center; color:white;">
             <p style="font-size:1.1em;">Are you sure? Your score will not be saved.</p>
-            <div class="btn-container" style="display:flex; gap:10px; justify-content:center; margin-top:15px;">
-                <button class="skip-btn" onclick="location.reload()">Yes, Discard</button>
+            <div class="btn-container">
+                <button class="skip-btn" onclick="resetGame()">Yes, Discard</button>
                 <button class="save-btn" onclick="closeDiscardModal()">No, Go Back</button>
             </div>
         </div>
@@ -468,7 +468,26 @@ function spawnApple() {
 // Update your mouse/touch movement to clamp to dynamic canvas.width
 function handleMove(newX) {
     player.x = Math.max(0, Math.min(newX - player.width / 2, canvas.width - player.width));
-}        
+}  
+// --- RESET GAME ---
+function resetGame() {
+    // 1. Reset Game Variables
+    score = 0;
+    scoreElement.innerText = score;
+    apples = [];
+    gameActive = true;
+    
+    // 2. Hide all menus
+    document.getElementById('gameOverMenu').style.display = 'none';
+    document.getElementById('discardModal').style.display = 'none';
+    
+    // 3. Reset player position (standardizing for current canvas size)
+    player.x = canvas.width / 2 - player.width / 2;
+    player.y = canvas.height - 60;
+
+    // 4. Restart the spawn timer
+    lastSpawnTime = performance.now();
+}
 // --- GAME LOGIC ---
 function spawnApple() {
     const currentSpeed = 200 + (Math.floor(score / 5) * 50); // Speed in pixels per second
@@ -566,12 +585,23 @@ function gameOver() {
 }
 
 function submitScore() {
-    const name = document.getElementById('playerName').value || "Anonymous";
-    let highScores = JSON.parse(localStorage.getItem('appleScores')) || [];
-    highScores.push({ name: name, score: score });
-    highScores.sort((a, b) => b.score - a.score);
-    localStorage.setItem('appleScores', JSON.stringify(highScores.slice(0, 10)));
-    location.reload(); 
+    const nameInput = document.getElementById('playerName');
+    const name = nameInput.value.trim() || "Anonymous";
+    
+    if (score > 0) {
+        let highScores = JSON.parse(localStorage.getItem('appleScores')) || [];
+        highScores.push({ name: name, score: score });
+        highScores.sort((a, b) => b.score - a.score);
+        highScores = highScores.slice(0, 10);
+        localStorage.setItem('appleScores', JSON.stringify(highScores));
+    }
+
+    displayLeaderboard();
+    updateHighScoreDisplay();
+    
+    // RESET WITHOUT RELOADING
+    nameInput.value = ""; 
+    resetGame(); 
 }
 
 // Function triggered by the "Don't Save" button in the Game Over menu
