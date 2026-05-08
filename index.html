@@ -644,7 +644,6 @@ function draw(timestamp) {
 function togglePause() {
     if (!gameActive) return;
     isPaused = !isPaused;
-    canvas.style.filter = isPaused ? "blur(4px) grayscale(30%)" : "none";
 }
 
 function toggleSettings() {
