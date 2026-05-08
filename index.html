@@ -604,6 +604,14 @@ function submitScore() {
     resetGame(); 
 }
 
+    displayLeaderboard();
+    updateHighScoreDisplay();
+    
+    // RESET WITHOUT RELOADING
+    nameInput.value = ""; 
+    resetGame(); 
+}
+
 // Function triggered by the "Don't Save" button in the Game Over menu
 function discardScore() {
     document.getElementById('discardModal').style.display = 'flex';
