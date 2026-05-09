@@ -238,6 +238,12 @@
             font-size: 0.85em;
             outline: none;
         }
+
+        .difficulty-btn.active {
+            border: 3px solid white;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            transform: scale(1.05);
+        }
     </style>
 </head>
 <body>
@@ -296,9 +302,9 @@
                     <div id="difficultyTabContent" style="display:none">
                         <h3 style="margin-top:0">Difficulty</h3>
                         <div style="display: flex; flex-direction: column; gap: 10px;">
-                            <button onclick="setDifficulty('easy')" style="background:#2ecc71">Easy</button>
-                            <button onclick="setDifficulty('medium')" style="background:#f1c40f">Medium</button>
-                            <button onclick="setDifficulty('hard')" style="background:#e74c3c">Hard</button>
+                            <button id="easyBtn" class="difficulty-btn active" onclick="setDifficulty('easy')" style="background:#2ecc71">Easy</button>
+                            <button id="mediumBtn" class="difficulty-btn" onclick="setDifficulty('medium')" style="background:#f1c40f">Medium</button>
+                            <button id="hardBtn" class="difficulty-btn" onclick="setDifficulty('hard')" style="background:#e74c3c">Hard</button>
                         </div>
                     </div>
                 </div>
@@ -448,7 +454,17 @@
 
         function setDifficulty(level) {
             difficulty = level;
-            resetGameSession();
+            
+            // 1. Remove the 'active' class from all difficulty buttons
+            const buttons = document.querySelectorAll('.difficulty-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            // 2. Add the 'active' class to the button corresponding to the selected level
+            const selectedBtn = document.getElementById(level + 'Btn');
+            if (selectedBtn) {
+                selectedBtn.classList.add('active');
+            }
+            
             toggleSettings(); // Close menu after selection
         }
         
