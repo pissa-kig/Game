@@ -622,7 +622,7 @@
             // --- DYNAMIC SPAWNING ---
             // Use the base rate from difficulty settings, decreasing as score goes up  
             const baseRate = settings[difficulty].rate;
-            let currentSpawnRate = Math.max(500, baseRate - (Math.floor(score / 5) * 200));
+            let currentSpawnRate = Math.max(500, baseRate - (Math.floor(score / 5) * 100));
             
             if (timestamp - lastSpawnTime > currentSpawnRate) {
                 spawnApple();
