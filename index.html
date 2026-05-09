@@ -4,12 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Apples and Basket</title>
-    <link rel="icon" type="image/png" href="/favicons/favicon-96x96.png" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="/favicons/favicon.svg" />
-    <link rel="shortcut icon" href="/favicons/favicon.ico" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/favicons/apple-touch-icon.png" />
-    <meta name="apple-mobile-web-app-title" content="MyWebSite" />
-    <link rel="manifest" href="/favicons/site.webmanifest" />
     <style>
         body {
             margin: 0;
@@ -35,7 +29,6 @@
             flex-direction: column;
         }
 
-        /* --- CREDITS WINDOW (DOUBLE BORDER SYSTEM) --- */
         #creditsContent {
             position: relative;
             background: #2c3e50;
@@ -46,7 +39,7 @@
             min-width: 300px;
             overflow: hidden;
             z-index: 1;
-            border: 3px solid #f1c40f; 
+            border: 3px solid #f1c40f;
             animation: menuPop 0.3s ease-out forwards, pulsateGold 2s infinite ease-in-out;
         }
 
@@ -57,11 +50,7 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: conic-gradient(
-                transparent, 
-                rgba(0, 212, 255, 0.7), 
-                transparent 30%
-            );
+            background: conic-gradient(transparent, rgba(0, 212, 255, 0.7), transparent 30%);
             animation: rotateGradient 4s linear infinite;
             z-index: -1;
         }
@@ -75,364 +64,103 @@
             z-index: -1;
         }
 
-        .fade-out {
-            animation: menuFadeOut 0.3s ease-in forwards !important;
-        }
-
-        /* --- ANIMATIONS --- */
-        @keyframes rotateGradient {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        @keyframes menuPop {
-            from { opacity: 0; transform: scale(0.8); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        @keyframes menuFadeOut {
-            from { opacity: 1; transform: scale(1); }
-            to { opacity: 0; transform: scale(0.8); }
-        }
-
-        @keyframes pulsateGold {
+        @keyframes rotateGradient { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        @keyframes menuPop { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+        @keyframes pulsateGold { 
             0% { box-shadow: 0 0 15px rgba(241, 196, 15, 0.4); }
             50% { box-shadow: 0 0 35px rgba(230, 126, 34, 0.7); }
             100% { box-shadow: 0 0 15px rgba(241, 196, 15, 0.4); }
         }
 
-        /* --- GAME INTERFACE --- */
-        #gameContainer {
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-
-        canvas {
-            background-image: url('bg.png');
-            background-size: cover;
-            background-position: center;
-            border: 4px solid #34495e;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-            cursor: none;
-        }
-
-        h1 { margin: 5px 0; text-shadow: 2px 2px #000; }
-
-        #scoreList { list-style: none; padding: 0; margin: 20px 0; width: 100%; }
-
-        #scoreList li {
-            background: rgba(255, 255, 255, 0.1);
-            margin-bottom: 8px;
-            padding: 10px;
-            border-radius: 5px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            transition: background 0.2s;
-            box-sizing: border-box;
-        }
-
-        #scoreList li span:first-child {
-            text-align: left;
-            flex: 1;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            margin-right: 10px;
-        }
-
-        #scoreList li strong { text-align: right; min-width: 30px; }
-        #scoreList li:hover { background: rgba(255, 255, 255, 0.2); }
-
-        #gameOverMenu {
-            display: none;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(0, 0, 0, 0.95);
-            padding: 30px;
-            text-align: center;
-            border: 3px solid #e74c3c;
-            border-radius: 15px;
-            z-index: 2000;
-            box-shadow: 0 0 50px rgba(0,0,0,0.8);
-            min-width: 250px;
-        }
-
-        input { padding: 10px; width: 90%; border-radius: 5px; border: none; margin: 15px 0; font-size: 1em; }
-
+        #gameContainer { flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; }
+        canvas { background-image: url('bg.png'); background-size: cover; background-position: center; border: 4px solid #34495e; box-shadow: 0 0 20px rgba(0,0,0,0.5); cursor: none; }
+        #scoreList { list-style: none; padding: 0; margin: 20px 0; width: 100%; overflow-y: auto; }
+        #scoreList li { background: rgba(255, 255, 255, 0.1); margin-bottom: 8px; padding: 10px; border-radius: 5px; display: flex; justify-content: space-between; cursor: pointer; }
+        #gameOverMenu { display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.95); padding: 30px; text-align: center; border: 3px solid #e74c3c; border-radius: 15px; z-index: 2000; min-width: 250px; }
+        input { padding: 10px; width: 90%; border-radius: 5px; border: none; margin: 15px 0; }
         .btn-container { display: flex; gap: 10px; justify-content: center; }
-
-        button { padding: 12px 20px; cursor: pointer; border: none; border-radius: 5px; font-weight: bold; transition: 0.2s; }
+        button { padding: 12px 20px; cursor: pointer; border: none; border-radius: 5px; font-weight: bold; }
         .save-btn { background: #2ecc71; color: white; }
-        .save-btn:hover { background: #27ae60; }
         .skip-btn { background: #f70c0c; color: white; }
-        .skip-btn:hover { background: #e07c75; }
-
-        #creditsBtn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #f1c40f;
-            color: #2c3e50;
-            border: 2px solid #d4af37;
-            padding: 8px 15px;
-            border-radius: 5px;
-            font-weight: bold;
-            z-index: 1000;
-            transition: 0.3s;
-        }
-
-        #creditsBtn:hover {
-            background: #d4af37;
-            transform: scale(1.05);
-        }
-
-        #gameCanvas:fullscreen {
-            width: 100vw;
-            height: 100vh;
-            object-fit: contain;
-            background-color: #16c6f2;
-        }
-
-        #fullscreenArea:fullscreen {
-            width: 100vw;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #16c6f2;
-        }
-        
-        #fullscreenArea:fullscreen canvas {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-        }
-
-        #rightPanel { cursor: default; }
-
-        .scoreboard-header {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-            border-bottom: 2px solid #3498db;
-            padding-bottom: 10px;
-            margin-bottom: 10px;
-        }
-
-        #sortOptions {
-            width: 100%;
-            background: #34495e;
-            color: white;
-            border: 1px solid #3498db;
-            border-radius: 4px;
-            padding: 4px;
-            cursor: pointer;
-            font-size: 0.85em;
-            outline: none;
-        }
-
-        .difficulty-btn.active {
-            border: 3px solid white;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
-            transform: scale(1.05);
-        }
+        .difficulty-btn.active { border: 3px solid white; transform: scale(1.05); }
     </style>
 </head>
 <body>
-    <button id="creditsBtn" onclick="toggleCredits()" title="Credits" style="font-family: serif;">Credits</button>
+    <button id="creditsBtn" onclick="toggleCredits()" style="position: absolute; top: 10px; right: 10px; background: #f1c40f; padding: 8px 15px; z-index: 1000;">Credits</button>
 
-    <div id="sidePanel" style="width: 220px; background: rgba(0, 0, 0, 0.4); border-right: 2px solid #34495e; height: 100vh; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column;">
-        <div class="scoreboard-header" style="position: relative; border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-bottom: 15px; display: flex; flex-direction: column; gap: 10px;">
-            
-            <div style="display: flex; align-items: center; justify-content: space-between;">
-                <h3 style="margin: 0; color: #3498db; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">Your Scores</h3>
-                
-                <button onclick="toggleHelp()" 
-                        style="position: absolute; 
-                               left: 230px; /* Moves it 10px past the panel width */
-                               top: 0; 
-                               background: #f70c0c; 
-                               color: white; 
-                               border-radius: 50%; 
-                               width: 28px; 
-                               height: 28px; 
-                               font-weight: bold; 
-                               cursor: pointer; 
-                               border: 2px solid white; 
-                               box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-                               display: flex; 
-                               align-items: center; 
-                               justify-content: center;
-                               z-index: 1002;" 
-                        title="How to Play">?</button>
-            </div>
-    
-            <div class="sorting-container">
-                <select id="sortOptions" onchange="displayLeaderboard()" 
-                        style="width: 100%; background: #34495e; color: white; border: 1px solid #3498db; border-radius: 4px; padding: 4px; cursor: pointer; font-size: 0.85em; outline: none;">
-                    <option value="recent">Newest</option>
-                    <option value="high">Score (High-Low)</option>
-                    <option value="low">Score (Low-High)</option>
-                    <option value="az">A-Z</option>
-                    <option value="za">Z-A</option>
-                </select>
-            </div>
+    <div id="sidePanel">
+        <div class="scoreboard-header" style="border-bottom: 2px solid #3498db; padding-bottom: 10px; margin-bottom: 15px;">
+            <h3 style="color: #3498db; margin: 0;">Your Scores</h3>
+            <select id="sortOptions" onchange="displayLeaderboard()" style="width: 100%; margin-top: 10px;">
+                <option value="recent">Newest</option>
+                <option value="high">Score (High-Low)</option>
+                <option value="az">A-Z</option>
+            </select>
         </div>
-    
-        <ul id="scoreList" style="list-style: none; padding: 0; margin: 0; width: 100%; overflow-y: auto;">
-            </ul>
+        <ul id="scoreList"></ul>
     </div>
 
     <div id="gameContainer">
-        
-        <h2 style="color: #ff4d4d; margin: 0; font-size: 2.5em; text-transform: uppercase; letter-spacing: 2px; font-family: 'Rockwell', serif;">
-            Apples and Basket
-        </h2>
-
-        
-        
-        <h1 style="display: flex; gap: 40px; justify-content: center; align-items: center;">
+        <h2 style="color: #ff4d4d; margin: 0; font-size: 2.5em; font-family: 'Rockwell', serif;">Apples and Basket</h2>
+        <h1 style="display: flex; gap: 40px;">
             <div>Score: <span id="scoreVal">0</span></div>
-            <div style="font-size: 0.6em; color: #f1c40f; opacity: 0.9;">Best: <span id="highScoreVal">0</span></div>
+            <div style="font-size: 0.6em; color: #f1c40f;">Best: <span id="highScoreVal">0</span></div>
         </h1>
 
-        <div id="fullscreenArea" style="position: relative; display: flex; flex-direction: row; background: #16c6f2; border: 4px solid #34495e; line-height: 0;">
-            <div id="startMenu" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: rgba(0, 0, 0, 0.85); padding: 20px; border: 2px solid #3498db; border-radius: 10px; z-index: 2500; display: flex; justify-content: center; align-items: center;">
-                <button class="save-btn" 
-                        style="background: #2ecc71; color: white; padding: 15px 40px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; font-size: 1.4em; font-family: 'Rockwell', serif; transition: transform 0.1s;" 
-                        onclick="startGame()"
-                        onmousedown="this.style.transform='scale(0.95)'"
-                        onmouseup="this.style.transform='scale(1)'">
-                    START
-                </button>
-            </div>
-            <div id="settingsMenu" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #2c3e50; border: 3px solid #34495e; border-radius: 10px; z-index: 2600; width: 400px; height: 300px; overflow: hidden; display: none;">
-                <div style="display: flex; height: 100%;">
-                    <div id="settingsContent" style="flex-grow: 1; padding: 20px; color: white;">
-                        <div id="difficultyTabContent" style="display:block">
-                            <h3 style="margin-top:0">Difficulty</h3>
-                            <div style="display: flex; flex-direction: column; gap: 10px;">
-                                <button id="easyBtn" class="difficulty-btn active" onclick="setDifficulty('easy')" style="background:#2ecc71">Easy</button>
-                                <button id="mediumBtn" class="difficulty-btn" onclick="setDifficulty('medium')" style="background:#f1c40f">Medium</button>
-                                <button id="hardBtn" class="difficulty-btn" onclick="setDifficulty('hard')" style="background:#e74c3c">Hard</button>
-                            </div>
-                        </div>
-                        <div id="styleTabContent" style="display:none">
-                            <h3 style="margin-top:0">Style</h3>
-                            <p>Coming soon</p>
-                        </div>
-                    </div>
-                    <div style="width: 100px; background: rgba(0,0,0,0.3); display: flex; flex-direction: column; border-left: 1px solid #34495e;">
-                        <button onclick="showTab('difficulty')" style="background:transparent; color:white; border-bottom:1px solid #444; border-radius:0">Difficulty</button>
-                        <button onclick="showTab('style')" style="background:transparent; color:white; border-bottom:1px solid #444; border-radius:0">Style</button>
-                        <button onclick="toggleSettings()" style="background:#e74c3c; color:white; margin-top:auto; border-radius:0">Close</button>
-                    </div>
-                </div>
-            </div>
-            <canvas id="gameCanvas" width="600" height="400" style="border: none; flex-grow: 1;"></canvas>
-
-            <div id="fsOverlay" style="display: none; position: absolute; bottom: 20px; left: 20px; right: 80px; pointer-events: none; z-index: 1005; justify-content: space-between; font-size: 2em; text-shadow: 2px 2px 4px black;">
-                <div>Score: <span id="fsScore">0</span></div>
-                <div>Best: <span id="fsBest">0</span></div>
+        <div id="fullscreenArea" style="position: relative; background: #16c6f2; border: 4px solid #34495e;">
+            <div id="startMenu" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); z-index: 2500;">
+                <button class="save-btn" style="padding: 15px 40px; font-size: 1.4em;" onclick="startGame()">START</button>
             </div>
             
-            <div id="rightPanel" style="width: 60px; background: rgba(0,0,0,0.5); display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 10px 0; border-left: 2px solid #34495e; z-index: 1001; cursor: default;">
-                <img src="full.png" id="fullscreenBtn" onclick="toggleFullscreen()" 
-                     style="width: 35px; height: 35px; cursor: pointer; opacity: 0.8; transition: 0.3s;" 
-                     onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'" title="Toggle Fullscreen">
-                
-                <img src="settings.png" id="settingsIcon" onclick="toggleSettings()" 
-                     style="width: 40px; height: 40px; cursor: pointer; opacity: 0.8;"
-                     onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">
-
-                <img src="pause.png" id="pauseBtn" onclick="togglePause()" 
-                     style="width: 45px; height: 45px; cursor: pointer; opacity: 0.8;"
-                     onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">
+            <div id="settingsMenu" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #2c3e50; border: 3px solid #34495e; padding: 20px; z-index: 2600;">
+                <h3>Difficulty</h3>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <button id="easyBtn" class="difficulty-btn" onclick="setDifficulty('easy')" style="background:#2ecc71">Easy</button>
+                    <button id="mediumBtn" class="difficulty-btn" onclick="setDifficulty('medium')" style="background:#f1c40f">Medium</button>
+                    <button id="hardBtn" class="difficulty-btn" onclick="setDifficulty('hard')" style="background:#e74c3c">Hard</button>
+                    <button onclick="toggleSettings()" style="background:#e74c3c; color:white; margin-top:10px;">Close</button>
+                </div>
             </div>
+
+            <canvas id="gameCanvas" width="600" height="400"></canvas>
 
             <div id="gameOverMenu">
-                <h2 style="color: #e74c3c; margin-top:0; font-size: 2em;">GAME OVER</h2>
-                <p style="font-size: 1.2em;">Final Score: <span id="finalScore">0</span></p>
-                <input type="text" id="playerName" placeholder="Enter Name" maxlength="20">
+                <h2 style="color: #e74c3c;">GAME OVER</h2>
+                <p>Final Score: <span id="finalScore">0</span></p>
+                <input type="text" id="playerName" placeholder="Enter Name">
                 <div class="btn-container">
                     <button class="save-btn" onclick="submitScore()">Save & Restart</button>
-                    <button class="skip-btn" onclick="discardScore()">Don't Save</button>
+                    <button class="skip-btn" onclick="location.reload()">Discard</button>
                 </div>
-            </div>
-
-            <div id="discardModal" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:3000; align-items:center; justify-content:center; line-height: normal;">
-                <div style="background:#2c3e50; padding:20px; border-radius:10px; border:2px solid #e67e22; text-align:center; color:white;">
-                    <p style="font-size:1.1em;">Are you sure? Your score will not be saved.</p>
-                    <div class="btn-container" style="margin-top:15px;">
-                        <button class="skip-btn" onclick="location.reload()">Yes, Discard</button>
-                        <button class="save-btn" onclick="closeDiscardModal()">No, Go Back</button>
-                    </div>
-                </div>
-            </div>
-        </div>     
-        <p>Catch the Apples!</p>
-    </div>
-
-    <div id="deleteModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:2000; align-items:center; justify-content:center;">
-        <div style="background:#2c3e50; padding:20px; border-radius:10px; border:2px solid #f1c40f; text-align:center;">
-            <p style="color:white; font-size:1.1em;">Are you sure you want to delete this score?</p>
-            <div class="btn-container">
-                <button class="skip-btn" id="confirmDelete">Yes</button>
-                <button class="save-btn" onclick="closeDeleteModal()">No</button>
             </div>
         </div>
+        <p>Catch the Apples! (Bonus Baskets appear after 25 pts)</p>
     </div>
 
     <div id="creditsModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:3000; align-items:center; justify-content:center;">
         <div id="creditsContent">
-            <h2 style="color:#f1c40f; margin-top:0;">GAME CREDITS</h2>
-            <div style="text-align:left; margin: 20px 0; line-height: 1.6;">
-                <p><strong>Graphics Design:</strong> Oliver Trippiedi</p>
-                <p><strong>Developer:</strong> Nicholas Caisse</p>
-                <p><strong>Engine:</strong> HTML5 Canvas & JavaScript</p>
-                <p><strong>Title Name:</strong> Gerardo Nieto</p>
-                <p><strong>Coding Advisers:</strong> Tobe Egbuonu, Marco Licon</p>
-                <p><strong>Play Testers:</strong> Tobe Egbuonu, Marco Licon, Gerado Nieto, Pablo Muñiz</p>
-            </div>
-            <button class="skip-btn" style="width:100%; background:#f1c40f; color:#2c3e50;" onclick="toggleCredits()">Close</button>
+            <h2>GAME CREDITS</h2>
+            <p>Developer: Nicholas Caisse</p>
+            <button class="skip-btn" onclick="toggleCredits()">Close</button>
         </div>
     </div>
 
-    <div id="helpMenu" style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 4000; align-items: center; justify-content: center;">
-        <div style="background: #2c3e50; padding: 30px; border-radius: 15px; border: 2px solid #3498db; text-align: center; max-width: 300px;">
-            <h2 style="color:#3498db">How to Play</h2>
-            <ul style="text-align: left; line-height: 1.6;">
-                <li>Move the basket to catch falling apples.</li>
-                <li>Don't let an apple hit the floor!</li>
-                <p>    --- Keyboard Shortcuts ---    </p>
-                <li>Press <b>P</b> to pause, <b>F</b> for fullscreen.</li>
-                <li>Press <b>S</b> to start the game.</li>
-                <li>Prees <b>T</b> to open settings </li>
-            </ul>
-            <button class="save-btn" onclick="toggleHelp()" style="width:100%">Got it!</button>
-        </div>
-    </div>
-    
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
         const scoreElement = document.getElementById('scoreVal');
         const scoreListUl = document.getElementById('scoreList');
+        
         const settings = {
-            easy: { speed: 150, rate: 1500 },
-            medium: { speed: 250, rate: 1200 },
-            hard: { speed: 400, rate: 800 }
+            easy: { speed: 150, rate: 1500, bonusChance: 0.15 },
+            medium: { speed: 250, rate: 1200, bonusChance: 0.08 },
+            hard: { speed: 400, rate: 800, bonusChance: 0.02 }
         };
-        const background = new Image();
-        background.src = 'bg.png'; 
+
+        const background = new Image(); background.src = 'bg.png';
+        const basketImg = new Image(); basketImg.src = 'basket.png';
+        const appleImg = new Image(); appleImg.src = 'apple.png';
+        const bonusImg = new Image(); bonusImg.src = 'bskt.png';
 
         let score = 0;
         let difficulty = 'easy';
@@ -440,301 +168,135 @@
         let isPaused = false;
         let apples = [];
         let lastSpawnTime = 0;
-        let lastFrameTime = 0; 
-        let scoreToDeleteIndex = null;
-
-        const basketImg = new Image();
-        basketImg.src = 'basket.png'; 
-        const appleImg = new Image();
-        appleImg.src = 'apple.png'; 
-
+        let lastFrameTime = 0;
         const player = { x: 260, y: 330, width: 80, height: 60 };
 
-        window.onload = function() {
+        window.onload = () => {
             displayLeaderboard();
-            updateHighScoreDisplay();
-        
-            // Retrieve saved difficulty or default to 'easy'
-            const savedDifficulty = localStorage.getItem('appleDifficulty') || 'easy';
-            setDifficulty(savedDifficulty);
+            const saved = localStorage.getItem('appleDifficulty') || 'easy';
+            setDifficulty(saved);
         };
 
         function setDifficulty(level) {
             difficulty = level;
-            
-            // Save to localStorage
             localStorage.setItem('appleDifficulty', level);
-        
-            // 1. Remove the 'active' class from all difficulty buttons
-            const buttons = document.querySelectorAll('.difficulty-btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
-            
-            // 2. Add the 'active' class to the button corresponding to the selected level
-            const selectedBtn = document.getElementById(level + 'Btn');
-            if (selectedBtn) {
-                selectedBtn.classList.add('active');
-            }
-        }
-        
-        function handleMove(inputX) {
-            if (isPaused || !gameActive) return;
-            player.x = Math.max(0, Math.min(inputX - player.width / 2, canvas.width - player.width));
-        }
-
-        canvas.addEventListener('mousemove', (e) => {
-            const rect = canvas.getBoundingClientRect();
-            handleMove(e.clientX - rect.left);
-        });
-
-        canvas.addEventListener('touchmove', (e) => {
-            e.preventDefault(); 
-            const rect = canvas.getBoundingClientRect();
-            const touch = e.touches[0];
-            handleMove(touch.clientX - rect.left);
-        }, { passive: false });
-
-        function updateHighScoreDisplay() {
-            const highScores = JSON.parse(localStorage.getItem('appleScores')) || [];
-            const topScore = highScores.length > 0 ? Math.max(...highScores.map(s => s.score)) : 0;
-            const highScoreDisplay = document.getElementById('highScoreVal');
-            highScoreDisplay.innerText = topScore;
-        }
-
-        function toggleCredits() {
-            const modal = document.getElementById('creditsModal');
-            const content = document.getElementById('creditsContent');
-
-            if (modal.style.display === 'none' || modal.style.display === '') {
-                content.classList.remove('fade-out');
-                modal.style.display = 'flex';
-                if (gameActive && !isPaused) togglePause();
-            } else {
-                content.classList.add('fade-out');
-                setTimeout(() => {
-                    modal.style.display = 'none';
-                    content.classList.remove('fade-out');
-                    if (gameActive && isPaused) togglePause();
-                }, 300);
-            }
+            document.querySelectorAll('.difficulty-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(level + 'Btn').classList.add('active');
         }
 
         function startGame() {
-            if (gameActive) return; // Prevent multiple starts
-            
-            // Hide the start menu
             document.getElementById('startMenu').style.display = 'none';
-            
-            // Activate game logic
             gameActive = true;
+            score = 0;
+            apples = [];
             lastSpawnTime = performance.now();
             lastFrameTime = performance.now();
         }
 
-        function toggleHelp() {
-            const helpMenu = document.getElementById('helpMenu');
-            
-            if (helpMenu.style.display === 'none' || helpMenu.style.display === '') {
-                helpMenu.style.display = 'flex';
-                // Pause the game if it is running so you don't lose while reading 
-                if (gameActive && !isPaused) togglePause(); 
-            } else {
-                helpMenu.style.display = 'none';
-                // Optional: Unpause when closing
-                // if (gameActive && isPaused) togglePause();
-            }
-        }
-        
-        function toggleFullscreen() {
-            const area = document.getElementById('fullscreenArea');
-            if (!document.fullscreenElement) {
-                area.requestFullscreen?.() || area.webkitRequestFullscreen?.();
-            } else {
-                document.exitFullscreen?.();
-            }
-        }
-
-        document.addEventListener('fullscreenchange', () => {
-            const overlay = document.getElementById('fsOverlay');
-            if (document.fullscreenElement) {
-                overlay.style.display = 'flex';
-            } else {
-                overlay.style.display = 'none';
-            }
-            if (document.fullscreenElement) {
-                canvas.width = window.innerWidth - 80;
-                canvas.height = window.innerHeight;
-            } else {
-                canvas.width = 600;
-                canvas.height = 400;
-            }
-            player.y = canvas.height - 70;
-            apples = []; 
-        });
-
         function spawnApple() {
-            const baseSpeed = settings[difficulty].speed;
+            const config = settings[difficulty];
+            const baseSpeed = config.speed;
             const currentSpeed = baseSpeed + (Math.floor(score / 5) * 50);
+            
+            let type = 'apple';
+            // Check for bonus basket spawn condition
+            if (score >= 25) {
+                if (Math.random() < config.bonusChance) {
+                    type = 'bonus';
+                }
+            }
+
             apples.push({
-                x: Math.random() * (canvas.width - 40), 
+                x: Math.random() * (canvas.width - 40),
                 y: -50,
                 width: 40,
                 height: 40,
-                speed: currentSpeed
+                speed: currentSpeed,
+                type: type
             });
         }
 
         function update(timestamp) {
-            if (!gameActive || isPaused) {
-                lastFrameTime = timestamp;  
-                return;  
-            }
-        
-            // Calculate Delta Time to keep speed consistent regardless of FPS  
+            if (!gameActive || isPaused) { lastFrameTime = timestamp; return; }
             const dt = (timestamp - lastFrameTime) / 1000;
             lastFrameTime = timestamp;
-        
-            // --- DYNAMIC SPAWNING ---
-            // Use the base rate from difficulty settings, decreasing as score goes up  
+
             const baseRate = settings[difficulty].rate;
             let currentSpawnRate = Math.max(300, baseRate - (Math.floor(score / 5) * 200));
-            
+
             if (timestamp - lastSpawnTime > currentSpawnRate) {
                 spawnApple();
-                lastSpawnTime = timestamp;  
+                lastSpawnTime = timestamp;
             }
-        
-            // --- GAMEPLAY OVERLAY SYNC ---
-            // Only update these if the game is in fullscreen (fsOverlay)
-            const fsScore = document.getElementById('fsScore');
-            const fsBest = document.getElementById('fsBest');
-            if (fsScore) fsScore.innerText = score;
-            if (fsBest) fsBest.innerText = document.getElementById('highScoreVal').innerText;
-        
-            // --- APPLE MOVEMENT & COLLISION ---
+
             for (let i = apples.length - 1; i >= 0; i--) {
                 let a = apples[i];
-                a.y += a.speed * dt;  
-        
-                // Check for Basket Catch  
+                a.y += a.speed * dt;
+
                 if (a.y + a.height > player.y && a.y < player.y + player.height &&
                     a.x + a.width > player.x && a.x < player.x + player.width) {
                     
-                    score++;
-                    scoreElement.innerText = score;  
-
-                    if (document.getElementById('fsScore')) {
-                        document.getElementById('fsScore').innerText = score;
-                        document.getElementById('fsBest').innerText = document.getElementById('highScoreVal').innerText;
+                    // Point Logic
+                    if (a.type === 'bonus') {
+                        score += 5;
+                    } else {
+                        score++;
                     }
                     
-                    const highScoreDisplay = document.getElementById('highScoreVal');
-                    const currentBest = parseInt(highScoreDisplay.innerText);
-        
-                    if (score > currentBest) {
-                        highScoreDisplay.innerText = score;  
-                        highScoreDisplay.style.color = "#2ecc71"; // Record-breaking Green  
-                    }
-                    
+                    scoreElement.innerText = score;
                     apples.splice(i, 1);
-                    continue;  
+                    continue;
                 }
-        
-                // Check for Game Over (Apple hit floor)  
+
                 if (a.y > canvas.height) {
-                    gameOver();
-                    return;
+                    if (a.type === 'apple') {
+                        gameOver();
+                    } else {
+                        apples.splice(i, 1); // Ignore missed bonus baskets
+                    }
                 }
             }
         }
 
         function draw(timestamp) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-            // 1. Set Filter: Blur if paused OR if the game hasn't started yet
-            if (isPaused || !gameActive) {
-                ctx.filter = "blur(5px) grayscale(25%)";
-            } else {
-                ctx.filter = "none";
-            }
-        
-            // 2. Draw Background (Will be blurred if filter is set)
-            if (typeof background !== 'undefined' && background.complete) {
-                ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-            }
-        
-            // 3. Draw Game Objects
-            ctx.drawImage(basketImg, player.x, player.y, player.width, player.height);
-            apples.forEach(a => ctx.drawImage(appleImg, a.x, a.y, a.width, a.height));
-        
-            // 4. Reset filter for UI elements (Pause text, etc.)
-            ctx.filter = "none";
-        
-            if (isPaused) {
-                ctx.fillStyle = "rgba(0,0,0,0.3)";
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.fillStyle = "white";
-                ctx.font = "bold 40px Arial";
-                ctx.textAlign = "center";
-                ctx.fillText("PAUSED", canvas.width / 2, canvas.height / 2);
-            }
-        
-            // 5. Only run the update logic if the game is actually running
-            if (gameActive && !isPaused) {
-                update(timestamp);
-            }
+            if (background.complete) ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
             
+            ctx.drawImage(basketImg, player.x, player.y, player.width, player.height);
+            
+            apples.forEach(a => {
+                const img = a.type === 'bonus' ? bonusImg : appleImg;
+                ctx.drawImage(img, a.x, a.y, a.width, a.height);
+            });
+
+            if (isPaused) {
+                ctx.fillStyle = "rgba(0,0,0,0.5)";
+                ctx.fillRect(0,0, canvas.width, canvas.height);
+                ctx.fillStyle = "white";
+                ctx.font = "30px Arial";
+                ctx.textAlign = "center";
+                ctx.fillText("PAUSED", canvas.width/2, canvas.height/2);
+            }
+
+            update(timestamp);
             requestAnimationFrame(draw);
         }
 
-        window.addEventListener('keydown', (e) => {
-            if (document.activeElement.tagName === 'INPUT') return;
-        
-            switch (e.key.toLowerCase()) {
-                case 's':
-                    startGame();
-                    break;
-                case 'f':
-                    toggleFullscreen();
-                    break;
-                case 'p':
-                    togglePause();
-                case 't':
-                    toggleSettings();
-                    break;
-            }
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            player.x = Math.max(0, Math.min(e.clientX - rect.left - player.width/2, canvas.width - player.width));
         });
 
-        function togglePause() {
-            if (!gameActive) return;
-            isPaused = !isPaused;
-        }
-        
         function toggleSettings() {
-            const menu = document.getElementById('settingsMenu');
-            // Check if it's currently hidden or not set
-            const isOpening = (menu.style.display === 'none' || menu.style.display === '');
-            
-            if (isOpening) {
-                menu.style.display = 'block';
-                showTab('difficulty');
-                // Only pause if the game is running and not already paused
-                if (gameActive && !isPaused) {
-                    togglePause();a
-                }
-            } else {
-                menu.style.display = 'none';
-                // When closing, unpause only if the game is active and we are currently paused
-                if (gameActive && isPaused) {
-                    togglePause();
-                }
-            }
-        }
-        
-        function showTab(tab) {
-            document.getElementById('styleTabContent').style.display = tab === 'style' ? 'block' : 'none';
-            document.getElementById('difficultyTabContent').style.display = tab === 'difficulty' ? 'block' : 'none';
+            const m = document.getElementById('settingsMenu');
+            m.style.display = m.style.display === 'none' ? 'block' : 'none';
+            if (gameActive) isPaused = (m.style.display === 'block');
         }
 
+        function toggleCredits() {
+            const m = document.getElementById('creditsModal');
+            m.style.display = m.style.display === 'none' ? 'flex' : 'none';
+        }
 
         function gameOver() {
             gameActive = false;
@@ -747,60 +309,20 @@
             let highScores = JSON.parse(localStorage.getItem('appleScores')) || [];
             highScores.push({ name, score, timestamp: Date.now() });
             localStorage.setItem('appleScores', JSON.stringify(highScores));
-            location.reload(); 
-        }
-
-        function discardScore() {
-            document.getElementById('discardModal').style.display = 'flex';
-        }
-
-        function closeDiscardModal() {
-            document.getElementById('discardModal').style.display = 'none';
+            location.reload();
         }
 
         function displayLeaderboard() {
-            let highScores = JSON.parse(localStorage.getItem('appleScores')) || [];
-            const sortType = document.getElementById('sortOptions').value;
-
-            switch (sortType) {
-                case 'az': highScores.sort((a, b) => a.name.localeCompare(b.name)); break;
-                case 'za': highScores.sort((a, b) => b.name.localeCompare(a.name)); break;
-                case 'high': highScores.sort((a, b) => b.score - a.score); break;
-                case 'low': highScores.sort((a, b) => a.score - b.score); break;
-                case 'recent': highScores.sort((a, b) => b.timestamp - a.timestamp); break;
-            }
-
-            scoreListUl.innerHTML = highScores.length ? highScores.map((entry, index) => 
-                `<li onclick="askDeleteScore(${index})" title="Click to delete">
-                    <span>${entry.name}</span>
-                    <strong>${entry.score}</strong>
-                </li>`
-            ).join('') : "<li style='opacity: 0.5; justify-content: center;'>No scores yet</li>";
+            let scores = JSON.parse(localStorage.getItem('appleScores')) || [];
+            scores.sort((a,b) => b.score - a.score);
+            scoreListUl.innerHTML = scores.slice(0, 5).map(s => `<li><span>${s.name}</span><strong>${s.score}</strong></li>`).join('');
+            const top = scores.length ? Math.max(...scores.map(s => s.score)) : 0;
+            document.getElementById('highScoreVal').innerText = top;
         }
 
-        function askDeleteScore(index) {
-            scoreToDeleteIndex = index;
-            document.getElementById('deleteModal').style.display = 'flex';
-        }
-
-        function closeDeleteModal() { document.getElementById('deleteModal').style.display = 'none'; }
-
-        document.getElementById('confirmDelete').onclick = function() {
-            let highScores = JSON.parse(localStorage.getItem('appleScores')) || [];
-            highScores.splice(scoreToDeleteIndex, 1);
-            localStorage.setItem('appleScores', JSON.stringify(highScores));
-            closeDeleteModal();
-            displayLeaderboard();
-        };
-
-        let imagesLoaded = 0;
-        function checkLoad() { 
-            if (++imagesLoaded === 2) {
-                requestAnimationFrame((t) => { lastFrameTime = t; draw(t); });
-            } 
-        }
-        basketImg.onload = checkLoad;
-        appleImg.onload = checkLoad;
+        let loaded = 0;
+        function check() { if (++loaded === 4) requestAnimationFrame(draw); }
+        [background, basketImg, appleImg, bonusImg].forEach(img => img.onload = check);
     </script>
 </body>
 </html>
