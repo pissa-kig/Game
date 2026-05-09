@@ -479,6 +479,20 @@
             lastSpawnTime = performance.now();
             lastFrameTime = performance.now();
         }
+
+        function toggleHelp() {
+            const helpMenu = document.getElementById('helpMenu');
+            
+            if (helpMenu.style.display === 'none' || helpMenu.style.display === '') {
+                helpMenu.style.display = 'flex';
+                // Pause the game if it is running so you don't lose while reading 
+                if (gameActive && !isPaused) togglePause(); 
+            } else {
+                helpMenu.style.display = 'none';
+                // Optional: Unpause when closing
+                // if (gameActive && isPaused) togglePause();
+            }
+        }
         
         function toggleFullscreen() {
             const area = document.getElementById('fullscreenArea');
