@@ -660,8 +660,14 @@
         
                 // Check for Game Over (Apple hit floor)  
                 if (a.y > canvas.height) {
-                    gameOver();
-                    return;
+                    if (a.type === 'apple') {
+                        // Only end the game if it was a regular apple
+                        gameOver();
+                        return;
+                    } else {
+                        // If it was a bonus basket, just remove it from the array and keep playing
+                        apples.splice(i, 1);
+                    }
                 }
             }
         }
