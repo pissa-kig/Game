@@ -709,14 +709,7 @@
             document.getElementById('styleTabContent').style.display = tab === 'style' ? 'block' : 'none';
             document.getElementById('difficultyTabContent').style.display = tab === 'difficulty' ? 'block' : 'none';
         }
-        
-        function setDifficulty(level) {
-            difficulty = level;
-            alert("Difficulty set to: " + level);
-            toggleSettings();
-        }
 
-// Update spawnApple and update functions to use settings[difficulty] values
 
         function gameOver() {
             gameActive = false;
