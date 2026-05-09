@@ -450,11 +450,18 @@
         window.onload = function() {
             displayLeaderboard();
             updateHighScoreDisplay();
+        
+            // Retrieve saved difficulty or default to 'easy'
+            const savedDifficulty = localStorage.getItem('appleDifficulty') || 'easy';
+            setDifficulty(savedDifficulty);
         };
 
         function setDifficulty(level) {
             difficulty = level;
             
+            // Save to localStorage
+            localStorage.setItem('appleDifficulty', level);
+        
             // 1. Remove the 'active' class from all difficulty buttons
             const buttons = document.querySelectorAll('.difficulty-btn');
             buttons.forEach(btn => btn.classList.remove('active'));
@@ -464,7 +471,6 @@
             if (selectedBtn) {
                 selectedBtn.classList.add('active');
             }
-            
         }
         
         function handleMove(inputX) {
