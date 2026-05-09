@@ -448,6 +448,7 @@
         let scoreToDeleteIndex = null;
         let isSlowed = false;
         let slowTimer = null;
+        let slowExpiration = 0; // Tracks the timestamp of when slow mode ends
 
         const basketImg = new Image();
         basketImg.src = 'textures/basket.png'; 
