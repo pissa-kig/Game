@@ -494,27 +494,27 @@
 
         function draw(timestamp) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.filter = isPaused ? "blur(4px) grayscale(50%)" : "none";
-
-            if (background.complete) {
-                ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
-            } else {
-                ctx.fillStyle = "#16c6f2"; 
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-            }
-
-            // Inside your draw function, update the filter check:
+        
+            // 1. Set Filter: Blur if paused OR if the game hasn't started yet
             if (isPaused || !gameActive) {
-                ctx.filter = "blur(4px) grayscale(50%)";
+                ctx.filter = "blur(5px) grayscale(40%)";
             } else {
                 ctx.filter = "none";
             }
-
+        
+            // 2. Draw Background (Will be blurred if filter is set)
+            if (typeof background !== 'undefined' && background.complete) {
+                ctx.drawImage(background, 0, 0, canvas.width, canvas.height);
+            }
+        
+            // 3. Draw Game Objects
             ctx.drawImage(basketImg, player.x, player.y, player.width, player.height);
             apples.forEach(a => ctx.drawImage(appleImg, a.x, a.y, a.width, a.height));
-
+        
+            // 4. Reset filter for UI elements (Pause text, etc.)
+            ctx.filter = "none";
+        
             if (isPaused) {
-                ctx.filter = "none";
                 ctx.fillStyle = "rgba(0,0,0,0.3)";
                 ctx.fillRect(0, 0, canvas.width, canvas.height);
                 ctx.fillStyle = "white";
@@ -522,8 +522,12 @@
                 ctx.textAlign = "center";
                 ctx.fillText("PAUSED", canvas.width / 2, canvas.height / 2);
             }
-
-            update(timestamp);
+        
+            // 5. Only run the update logic if the game is actually running
+            if (gameActive && !isPaused) {
+                update(timestamp);
+            }
+            
             requestAnimationFrame(draw);
         }
 
