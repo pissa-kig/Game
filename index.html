@@ -427,12 +427,14 @@
         const scoreElement = document.getElementById('scoreVal');
         const scoreListUl = document.getElementById('scoreList');
         const settings = {
-            easy: { speed: 150, rate: 1500 },
-            medium: { speed: 250, rate: 1200 },
-            hard: { speed: 400, rate: 800 }
+            easy: { speed: 150, rate: 1500, bonusChance: 0.15 },    // 15% chance
+            medium: { speed: 250, rate: 1200, bonusChance: 0.08 },  // 8% chance
+            hard: { speed: 400, rate: 800, bonusChance: 0.02 }      // 2% chance
         };
+        const bonusImg = new Image();
         const background = new Image();
         background.src = 'bg.png'; 
+        bonusImg.src = 'bskt.png';
 
         let score = 0;
         let difficulty = 'easy';
@@ -572,17 +574,27 @@
         });
 
         function spawnApple() {
-            const baseSpeed = settings[difficulty].speed;
+            const config = settings[difficulty];
+            const baseSpeed = config.speed;
             const currentSpeed = baseSpeed + (Math.floor(score / 5) * 50);
+            
+            let type = 'apple';
+            
+            // Logic: Only spawn bonus baskets after reaching 25 points
+            // Difficulty rarity is handled by config.bonusChance
+            if (score >= 25 && Math.random() < config.bonusChance) {
+                type = 'bonus';
+            }
+        
             apples.push({
-                x: Math.random() * (canvas.width - 40), 
+                x: Math.random() * (canvas.width - 40),
                 y: -50,
                 width: 40,
                 height: 40,
-                speed: currentSpeed
+                speed: currentSpeed,
+                type: type 
             });
         }
-
         function update(timestamp) {
             if (!gameActive || isPaused) {
                 lastFrameTime = timestamp;  
@@ -618,10 +630,16 @@
                 // Check for Basket Catch  
                 if (a.y + a.height > player.y && a.y < player.y + player.height &&
                     a.x + a.width > player.x && a.x < player.x + player.width) {
-                    
-                    score++;
+                
+                    // Check if the caught item is a bonus basket or a regular apple
+                    if (a.type === 'bonus') {
+                        score += 5; // Add 5 points for the basket
+                    } else {
+                        score++;    // Add 1 point for a regular apple
+                    }
+                
                     scoreElement.innerText = score;  
-
+                
                     if (document.getElementById('fsScore')) {
                         document.getElementById('fsScore').innerText = score;
                         document.getElementById('fsBest').innerText = document.getElementById('highScoreVal').innerText;
@@ -629,7 +647,7 @@
                     
                     const highScoreDisplay = document.getElementById('highScoreVal');
                     const currentBest = parseInt(highScoreDisplay.innerText);
-        
+                
                     if (score > currentBest) {
                         highScoreDisplay.innerText = score;  
                         highScoreDisplay.style.color = "#2ecc71"; // Record-breaking Green  
@@ -664,7 +682,12 @@
         
             // 3. Draw Game Objects
             ctx.drawImage(basketImg, player.x, player.y, player.width, player.height);
-            apples.forEach(a => ctx.drawImage(appleImg, a.x, a.y, a.width, a.height));
+            
+            // Check type for each falling object to draw correct image
+            apples.forEach(a => {
+                const imgToDraw = (a.type === 'bonus') ? bonusImg : appleImg;
+                ctx.drawImage(imgToDraw, a.x, a.y, a.width, a.height);
+            });
         
             // 4. Reset filter for UI elements (Pause text, etc.)
             ctx.filter = "none";
