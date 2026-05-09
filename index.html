@@ -239,10 +239,17 @@
             outline: none;
         }
 
+        .difficulty-btn {
+            opacity: 0.6;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        
         .difficulty-btn.active {
-            border: 3px solid white;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            opacity: 1;
+            border: 2px solid white;
             transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
         }
     </style>
 </head>
@@ -302,7 +309,7 @@
                     <div id="difficultyTabContent" style="display:none">
                         <h3 style="margin-top:0">Difficulty</h3>
                         <div style="display: flex; flex-direction: column; gap: 10px;">
-                            <button id="easyBtn" class="difficulty-btn active" onclick="setDifficulty('easy')" style="background:#2ecc71">Easy</button>
+                            <button id="easyBtn" class="difficulty-btn" onclick="setDifficulty('easy')" style="background:#2ecc71">Easy</button>
                             <button id="mediumBtn" class="difficulty-btn" onclick="setDifficulty('medium')" style="background:#f1c40f">Medium</button>
                             <button id="hardBtn" class="difficulty-btn" onclick="setDifficulty('hard')" style="background:#e74c3c">Hard</button>
                         </div>
@@ -447,14 +454,20 @@
 
         const player = { x: 260, y: 330, width: 80, height: 60 };
 
+        let difficulty = localStorage.getItem('appleDifficulty') || 'easy';
+
         window.onload = function() {
             displayLeaderboard();
             updateHighScoreDisplay();
+            updateDifficultyUI(difficulty);
         };
 
         function setDifficulty(level) {
             difficulty = level;
-            
+            localStorage.setItem('appleDifficulty', level);
+    
+            updateDifficultyUI(level);
+            toggleSettings();
             // 1. Remove the 'active' class from all difficulty buttons
             const buttons = document.querySelectorAll('.difficulty-btn');
             buttons.forEach(btn => btn.classList.remove('active'));
@@ -466,7 +479,20 @@
             }
             
         }
-        
+
+        function updateDifficultyUI(level) {
+            // Remove 'active' class from all buttons
+            document.querySelectorAll('.difficulty-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Add 'active' class to the current one
+            const currentBtn = document.getElementById(level + 'Btn');
+            if (currentBtn) {
+                currentBtn.classList.add('active');
+            }
+        }
+                
         function handleMove(inputX) {
             if (isPaused || !gameActive) return;
             player.x = Math.max(0, Math.min(inputX - player.width / 2, canvas.width - player.width));
