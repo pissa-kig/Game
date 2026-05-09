@@ -112,7 +112,7 @@
         }
 
         canvas {
-            background-image: url('bg.png');
+            background-image: url('textures/bg.png');
             background-size: cover;
             background-position: center;
             border: 4px solid #34495e;
@@ -344,15 +344,15 @@
             </div>
             
             <div id="rightPanel" style="width: 60px; background: rgba(0,0,0,0.5); display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 10px 0; border-left: 2px solid #34495e; z-index: 1001; cursor: default;">
-                <img src="full.png" id="fullscreenBtn" onclick="toggleFullscreen()" 
+                <img src="textures/full.png" id="fullscreenBtn" onclick="toggleFullscreen()" 
                      style="width: 35px; height: 35px; cursor: pointer; opacity: 0.8; transition: 0.3s;" 
                      onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'" title="Toggle Fullscreen">
                 
-                <img src="settings.png" id="settingsIcon" onclick="toggleSettings()" 
+                <img src="textures/settings.png" id="settingsIcon" onclick="toggleSettings()" 
                      style="width: 40px; height: 40px; cursor: pointer; opacity: 0.8;"
                      onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">
 
-                <img src="pause.png" id="pauseBtn" onclick="togglePause()" 
+                <img src="textures/pause.png" id="pauseBtn" onclick="togglePause()" 
                      style="width: 45px; height: 45px; cursor: pointer; opacity: 0.8;"
                      onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.8'">
             </div>
@@ -432,8 +432,8 @@
         };
         const bonusImg = new Image();
         const background = new Image();
-        background.src = 'bg.png'; 
-        bonusImg.src = 'bskt.png';
+        background.src = 'textures/bg.png'; 
+        bonusImg.src = 'textures/bskt.png';
 
         let score = 0;
         let difficulty = 'easy';
@@ -445,9 +445,9 @@
         let scoreToDeleteIndex = null;
 
         const basketImg = new Image();
-        basketImg.src = 'basket.png'; 
+        basketImg.src = 'textures/basket.png'; 
         const appleImg = new Image();
-        appleImg.src = 'apple.png'; 
+        appleImg.src = 'textures/apple.png'; 
 
         const player = { x: 260, y: 330, width: 80, height: 60 };
 
