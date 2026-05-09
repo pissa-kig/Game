@@ -415,6 +415,7 @@
                 <p>    --- For Computer Players ---    </p>
                 <li>Press <b>P</b> to pause, <b>F</b> for fullscreen.</li>
                 <li>Press <b>S</b> to start the game.</li>
+                <li>Press <b>E</b> to open settings.</li>
             </ul>
             <button class="save-btn" onclick="toggleHelp()" style="width:100%">Got it!</button>
         </div>
@@ -690,13 +691,16 @@
         
             switch (e.key.toLowerCase()) {
                 case 's':
-                    startGame();
+                    startGame(); [cite: 179, 180]
                     break;
                 case 'f':
-                    toggleFullscreen();
+                    toggleFullscreen(); [cite: 180]
                     break;
                 case 'p':
-                    togglePause();
+                    togglePause(); [cite: 181]
+                    break;
+                case 'e':
+                    toggleSettings(); // Binds 'E' to the settings menu
                     break;
             }
         });
