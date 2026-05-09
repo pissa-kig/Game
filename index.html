@@ -427,9 +427,9 @@
         const scoreElement = document.getElementById('scoreVal');
         const scoreListUl = document.getElementById('scoreList');
         const settings = {
-            easy: { speed: 150, rate: 1500, bonusChance: 0.15 },    // 15% chance
-            medium: { speed: 250, rate: 1200, bonusChance: 0.08 },  // 8% chance
-            hard: { speed: 400, rate: 800, bonusChance: 0.02 }      // 2% chance
+            easy: { speed: 150, rate: 1500, bonusChance: 0.15, clockChance: 0.05 },    
+            medium: { speed: 250, rate: 1200, bonusChance: 0.08, clockChance: 0.03 },  
+            hard: { speed: 400, rate: 800, bonusChance: 0.02, clockChance: 0.01 }      
         };
         const bonusImg = new Image();
         const background = new Image();
@@ -590,14 +590,11 @@
             let type = 'apple';
             
             // Power-up spawning logic: Activates after 25 points
-            if (score >= 20) {
+            if (score >= 0) { // Changed from 20 to 0 for immediate testing
                 const rand = Math.random();
-                
-                // Check for Clock power-up (textures/clock.png)
                 if (rand < config.clockChance) {
                     type = 'clock';
                 } 
-                // Check for Bonus Basket (bskt.png)
                 else if (rand < (config.clockChance + config.bonusChance)) {
                     type = 'bonus';
                 }
@@ -747,6 +744,7 @@
                     break;
                 case 'p':
                     togglePause();
+                    break;
                 case 't':
                     toggleSettings();
                     break;
@@ -791,7 +789,7 @@
                 showTab('difficulty');
                 // Only pause if the game is running and not already paused
                 if (gameActive && !isPaused) {
-                    togglePause();a
+                    togglePause();
                 }
             } else {
                 menu.style.display = 'none';
