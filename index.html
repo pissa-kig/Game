@@ -590,7 +590,7 @@
             let type = 'apple';
             
             // Power-up spawning logic: Activates after 25 points
-            if (score >= 0) { // Changed from 20 to 0 for immediate testing
+            if (score >= 20) { 
                 const rand = Math.random();
                 if (rand < config.clockChance) {
                     type = 'clock';
