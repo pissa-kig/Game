@@ -118,6 +118,7 @@
             border: 4px solid #34495e;
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
             cursor: none;
+            transition: filter 1s ease-in-out;
         }
 
         h1 { margin: 5px 0; text-shadow: 2px 2px #000; }
@@ -432,6 +433,8 @@
         };
         const bonusImg = new Image();
         const background = new Image();
+        const clockImg = new Image();
+        clockImg.src = 'textures/clock.png';
         background.src = 'textures/bg.png'; 
         bonusImg.src = 'textures/bskt.png';
 
@@ -443,6 +446,8 @@
         let lastSpawnTime = 0;
         let lastFrameTime = 0; 
         let scoreToDeleteIndex = null;
+        let isSlowed = false;
+        let slowTimer = null;
 
         const basketImg = new Image();
         basketImg.src = 'textures/basket.png'; 
@@ -575,14 +580,27 @@
         function spawnApple() {
             const config = settings[difficulty];
             const baseSpeed = config.speed;
-            const currentSpeed = baseSpeed + (Math.floor(score / 5) * 50);
+            let currentSpeed = baseSpeed + (Math.floor(score / 5) * 50);
+            
+            // Apply 75% speed reduction if a clock power-up is currently active
+            if (isSlowed) {
+                currentSpeed *= 0.25;
+            }
             
             let type = 'apple';
             
-            // Logic: Only spawn bonus baskets after reaching 25 points
-            // Difficulty rarity is handled by config.bonusChance
-            if (score >= 20 && Math.random() < config.bonusChance) {
-                type = 'bonus';
+            // Power-up spawning logic: Activates after 25 points
+            if (score >= 25) {
+                const rand = Math.random();
+                
+                // Check for Clock power-up (textures/clock.png)
+                if (rand < config.clockChance) {
+                    type = 'clock';
+                } 
+                // Check for Bonus Basket (bskt.png)
+                else if (rand < (config.clockChance + config.bonusChance)) {
+                    type = 'bonus';
+                }
             }
         
             apples.push({
@@ -630,11 +648,12 @@
                 if (a.y + a.height > player.y && a.y < player.y + player.height &&
                     a.x + a.width > player.x && a.x < player.x + player.width) {
                 
-                    // Check if the caught item is a bonus basket or a regular apple
-                    if (a.type === 'bonus') {
-                        score += 5; // Add 5 points for the basket
+                    if (a.type === 'clock') {
+                        activateTimeSlow();
+                    } else if (a.type === 'bonus') {
+                        score += 5;
                     } else {
-                        score++;    // Add 1 point for a regular apple
+                        score++;
                     }
                 
                     scoreElement.innerText = score;  
@@ -690,7 +709,9 @@
             
             // Check type for each falling object to draw correct image
             apples.forEach(a => {
-                const imgToDraw = (a.type === 'bonus') ? bonusImg : appleImg;
+                let imgToDraw = appleImg;
+                if (a.type === 'bonus') imgToDraw = bonusImg;
+                if (a.type === 'clock') imgToDraw = clockImg;
                 ctx.drawImage(imgToDraw, a.x, a.y, a.width, a.height);
             });
         
@@ -732,6 +753,29 @@
             }
         });
 
+        function activateTimeSlow() {
+            isSlowed = true;
+            canvas.style.filter = "grayscale(50%)";
+        
+            // Slow down all current apples on screen
+            apples.forEach(apple => {
+                apple.speed *= 0.25;
+            });
+        
+            // Clear existing timer if you catch another clock while one is active
+            if (slowTimer) clearTimeout(slowTimer);
+        
+            slowTimer = setTimeout(() => {
+                isSlowed = false;
+                canvas.style.filter = "grayscale(0%)";
+                
+                // Restore speed to apples still on screen
+                apples.forEach(apple => {
+                    apple.speed /= 0.25;
+                });
+            }, 5000);
+        }
+        
         function togglePause() {
             if (!gameActive) return;
             isPaused = !isPaused;
