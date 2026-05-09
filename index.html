@@ -279,6 +279,7 @@
                 <select id="sortOptions" onchange="displayLeaderboard()" 
                         style="width: 100%; background: #34495e; color: white; border: 1px solid #3498db; border-radius: 4px; padding: 4px; cursor: pointer; font-size: 0.85em; outline: none;">
                     <option value="recent">Newest</option>
+                    <option value="oldest">Oldest</option>
                     <option value="high">Score (High-Low)</option>
                     <option value="low">Score (Low-High)</option>
                     <option value="az">A-Z</option>
@@ -791,6 +792,7 @@
                 case 'high': highScores.sort((a, b) => b.score - a.score); break;
                 case 'low': highScores.sort((a, b) => a.score - b.score); break;
                 case 'recent': highScores.sort((a, b) => b.timestamp - a.timestamp); break;
+                case 'oldest': hignScores.sort((a, b) => a.timestamp - b.timestamp); break;
             }
 
             scoreListUl.innerHTML = highScores.length ? highScores.map((entry, index) => 
