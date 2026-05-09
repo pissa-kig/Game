@@ -295,17 +295,17 @@
         <div id="settingsMenu" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background: #2c3e50; border: 3px solid #34495e; border-radius: 10px; z-index: 2600; width: 400px; height: 300px; overflow: hidden; display: none;">
             <div style="display: flex; height: 100%;">
                 <div id="settingsContent" style="flex-grow: 1; padding: 20px; color: white;">
-                    <div id="styleTabContent">
-                        <h3 style="margin-top:0">Style</h3>
-                        <p>Coming soon</p>
-                    </div>
-                    <div id="difficultyTabContent" style="display:none">
+                    <div id="difficultyTabContent" style="display:block">
                         <h3 style="margin-top:0">Difficulty</h3>
                         <div style="display: flex; flex-direction: column; gap: 10px;">
                             <button id="easyBtn" class="difficulty-btn active" onclick="setDifficulty('easy')" style="background:#2ecc71">Easy</button>
                             <button id="mediumBtn" class="difficulty-btn" onclick="setDifficulty('medium')" style="background:#f1c40f">Medium</button>
                             <button id="hardBtn" class="difficulty-btn" onclick="setDifficulty('hard')" style="background:#e74c3c">Hard</button>
                         </div>
+                    </div>
+                    <div id="styleTabContent" style="display:none">
+                        <h3 style="margin-top:0">Style</h3>
+                        <p>Coming soon</p>
                     </div>
                 </div>
                 <div style="width: 100px; background: rgba(0,0,0,0.3); display: flex; flex-direction: column; border-left: 1px solid #34495e;">
@@ -706,8 +706,15 @@
         
         function toggleSettings() {
             const menu = document.getElementById('settingsMenu');
-            menu.style.display = (menu.style.display === 'none' || menu.style.display === '') ? 'block' : 'none';
-            if (menu.style.display === 'block' && gameActive && !isPaused) togglePause();
+            const isOpening = (menu.style.display === 'none' || menu.style.display === '');
+            
+            menu.style.display = isOpening ? 'block' : 'none';
+            
+            if (isOpening) {
+                // Force Difficulty tab to show whenever the menu opens
+                showTab('difficulty'); 
+                if (gameActive && !isPaused) togglePause();
+            }
         }
         
         function showTab(tab) {
