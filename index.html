@@ -752,26 +752,43 @@
         });
 
         function activateTimeSlow() {
-            isSlowed = true;
-            canvas.style.filter = "grayscale(50%)";
+            const duration = 5000; // 5 seconds per clock
         
-            // Slow down all current apples on screen
-            apples.forEach(apple => {
-                apple.speed *= 0.25;
-            });
+            if (!isSlowed) {
+                // First clock: apply the multiplier and start the effect
+                isSlowed = true;
+                canvas.style.filter = "grayscale(50%)";
+                
+                apples.forEach(apple => {
+                    apple.speed *= 0.25;
+                });
         
-            // Clear existing timer if you catch another clock while one is active
-            if (slowTimer) clearTimeout(slowTimer);
+                // Set the initial expiration time
+                slowExpiration = Date.now() + duration;
+                startSlowTimer(duration);
+            } else {
+                // Subsequent clocks: stack the time without re-multiplying speed
+                clearTimeout(slowTimer);
+                
+                // Calculate new remaining time (current remaining + 5 seconds)
+                const remaining = slowExpiration - Date.now();
+                const newDuration = remaining + duration;
+                
+                slowExpiration = Date.now() + newDuration;
+                startSlowTimer(newDuration);
+            }
+        }
         
+        function startSlowTimer(delay) {
             slowTimer = setTimeout(() => {
                 isSlowed = false;
                 canvas.style.filter = "grayscale(0%)";
                 
-                // Restore speed to apples still on screen
+                // Restore speed only once when the final timer expires
                 apples.forEach(apple => {
                     apple.speed /= 0.25;
                 });
-            }, 5000);
+            }, delay);
         }
         
         function togglePause() {
