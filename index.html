@@ -777,6 +777,12 @@
         function togglePause() {
             if (!gameActive) return;
             isPaused = !isPaused;
+        
+            // If we are unpausing, reset the frame timer to "now" 
+            // so the game doesn't jump forward.
+            if (!isPaused) {
+                lastFrameTime = performance.now();
+            }
         }
         
         function toggleSettings() {
