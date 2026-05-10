@@ -505,7 +505,7 @@
 
         function setDifficulty(level) {
             difficulty = level;
-            
+            clickSound.play();
             // Save to localStorage
             localStorage.setItem('appleDifficulty', level);
         
@@ -576,7 +576,7 @@
 
         function toggleHelp() {
             const helpMenu = document.getElementById('helpMenu');
-            
+            clickSound.play();
             if (helpMenu.style.display === 'none' || helpMenu.style.display === '') {
                 helpMenu.style.display = 'flex';
                 // Pause the game if it is running so you don't lose while reading 
@@ -606,6 +606,7 @@
         
         function toggleFullscreen() {
             const area = document.getElementById('fullscreenArea');
+            clickSound.play();
             if (!document.fullscreenElement) {
                 area.requestFullscreen?.() || area.webkitRequestFullscreen?.();
             } else {
