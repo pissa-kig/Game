@@ -701,13 +701,13 @@
                 
                     if (a.type === 'clock') {
                         activateTimeSlow();
-                        tickSound.cloneNode(true).play();
+                        if (!isMuted) tickSound.cloneNode(true).play();
                     } else if (a.type === 'bonus') {
                         score += 5;
-                        grabSound.cloneNode(true).play();
+                        if (!isMuted) grabSound.cloneNode(true).play();
                     } else {
                         score++;
-                        grabSound.cloneNode(true).play();
+                        if (!isMuted) grabSound.cloneNode(true).play();
                     }
                 
                     scoreElement.innerText = score;  
