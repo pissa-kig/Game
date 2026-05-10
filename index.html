@@ -544,7 +544,7 @@
 
         function startGame() {
             if (gameActive) return; // Prevent multiple starts
-            
+            clickSound.play();
             // Hide the start menu
             document.getElementById('startMenu').style.display = 'none';
             
