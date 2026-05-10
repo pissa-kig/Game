@@ -287,6 +287,18 @@
                                justify-content: center;
                                z-index: 1002;" 
                         title="How to Play">?</button>
+                <img src="textures/unmuted.png" 
+                     id="muteBtn" 
+                     onclick="toggleMute()" 
+                     style="position: absolute; 
+                            left: 265px; /* Positioned to the right of the ? button */
+                            top: 0; 
+                            width: 28px; 
+                            height: 28px; 
+                            cursor: pointer; 
+                            z-index: 1002;
+                            filter: drop-shadow(2px 2px 3px rgba(0,0,0,0.3));" 
+                     title="Mute/Unmute">
             </div>
     
             <div class="sorting-container">
@@ -412,6 +424,7 @@
                 <p><strong>Developer:</strong> Nicholas Caisse</p>
                 <p><strong>Background:</strong> Oliver Trippiedi</p>
                 <p><strong>Title Name:</strong> Gerardo Nieto</p>
+                <p><strong>Textures:</strong> Google Images</p>
                 <p><strong>Coding Advisers:</strong> Tobe Egbuonu, Marco Licon</p>
                 <p><strong>Play Testers:</strong> Tobe Egbuonu, Marco Licon, Gerado Nieto, Pablo Muñiz</p>
                 <p><strong>Engine:</strong> HTML5 Canvas & JavaScript</p>
@@ -435,6 +448,8 @@
             <button class="save-btn" onclick="toggleHelp()" style="width:100%">Got it!</button>
         </div>
     </div>
+
+    
     
     <script>
         const canvas = document.getElementById('gameCanvas');
@@ -467,6 +482,7 @@
         let isSlowed = false;
         let slowTimer = null;
         let slowExpiration = 0; // Tracks the timestamp of when slow mode ends
+        let isMuted = false;
 
         const basketImg = new Image();
         basketImg.src = 'textures/basket.png'; 
@@ -567,6 +583,22 @@
                 // Optional: Unpause when closing
                 // if (gameActive && isPaused) togglePause();
             }
+        }
+
+        function toggleMute() {
+            isMuted = !isMuted;
+            const muteBtn = document.getElementById('muteBtn');
+            
+            // Set volume to 0 if muted, otherwise 0.5
+            const volumeLevel = isMuted ? 0 : 0.5;
+        
+            // Apply to all your audio objects
+            [catchSound, clockSound, buttonSound, gameOverSound].forEach(sound => {
+                if (sound) sound.volume = volumeLevel;
+            });
+        
+            // Update the image source
+            muteBtn.src = isMuted ? 'textures/muted.png' : 'textures/unmuted.png';
         }
         
         function toggleFullscreen() {
