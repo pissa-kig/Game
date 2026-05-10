@@ -576,7 +576,10 @@
 
         function toggleHelp() {
             const helpMenu = document.getElementById('helpMenu');
-            if (!isMuted) clickSound.play();
+            if (!isMuted && clickSound) {
+                clickSound.currentTime = 0; 
+                clickSound.play().catch(e => console.log("Audio play failed:", e));
+            }
             if (helpMenu.style.display === 'none' || helpMenu.style.display === '') {
                 helpMenu.style.display = 'flex';
                 // Pause the game if it is running so you don't lose while reading 
