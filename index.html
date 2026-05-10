@@ -448,6 +448,7 @@
         const bonusImg = new Image();
         const background = new Image();
         const clockImg = new Image();
+        const clickSound = new Audio('sounds/click.mp3');
         clockImg.src = 'textures/clock.png';
         background.src = 'textures/bg.png'; 
         bonusImg.src = 'textures/bskt.png';
@@ -524,7 +525,7 @@
         function toggleCredits() {
             const modal = document.getElementById('creditsModal');
             const content = document.getElementById('creditsContent');
-
+            clickSound.play();
             if (modal.style.display === 'none' || modal.style.display === '') {
                 content.classList.remove('fade-out');
                 modal.style.display = 'flex';
@@ -809,7 +810,7 @@
         function togglePause() {
             if (!gameActive) return;
             isPaused = !isPaused;
-        
+            clickSound.play();
             // If we are unpausing, reset the frame timer to "now" 
             // so the game doesn't jump forward.
             if (!isPaused) {
@@ -821,7 +822,7 @@
             const menu = document.getElementById('settingsMenu');
             // Check if it's currently hidden or not set
             const isOpening = (menu.style.display === 'none' || menu.style.display === '');
-            
+            clickSound.play();
             if (isOpening) {
                 menu.style.display = 'block';
                 showTab('difficulty');
