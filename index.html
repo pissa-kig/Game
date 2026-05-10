@@ -665,13 +665,13 @@
                 
                     if (a.type === 'clock') {
                         activateTimeSlow();
-                        tickSound.play();
+                        tickSound.cloneNode(true).play();
                     } else if (a.type === 'bonus') {
                         score += 5;
-                        grabSound.play();
+                        grabSound.cloneNode(true).play();
                     } else {
                         score++;
-                        grabSound.play();
+                        grabSound.cloneNode(true).play();
                     }
                 
                     scoreElement.innerText = score;  
