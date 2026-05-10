@@ -449,6 +449,8 @@
         const background = new Image();
         const clockImg = new Image();
         const clickSound = new Audio('sounds/click.mp3');
+        const grabSound = new Audio('sounds/grab.mp3');
+        const tickSound = new Audio('sounds/tick.mp3');
         clockImg.src = 'textures/clock.png';
         background.src = 'textures/bg.png'; 
         bonusImg.src = 'textures/bskt.png';
@@ -663,10 +665,13 @@
                 
                     if (a.type === 'clock') {
                         activateTimeSlow();
+                        tickSound.play();
                     } else if (a.type === 'bonus') {
                         score += 5;
+                        grabSound.play();
                     } else {
                         score++;
+                        grabSound.play();
                     }
                 
                     scoreElement.innerText = score;  
