@@ -709,12 +709,15 @@
                 
                     if (a.type === 'clock') {
                         activateTimeSlow();
+                        tickSound.currentTime = 0;
                         if (!isMuted) tickSound.cloneNode(true).play();
                     } else if (a.type === 'bonus') {
                         score += 5;
+                        grabSound.currentTime = 0;
                         if (!isMuted) grabSound.cloneNode(true).play();
                     } else {
                         score++;
+                        grabSound.currentTime = 0;
                         if (!isMuted) grabSound.cloneNode(true).play();
                     }
                 
