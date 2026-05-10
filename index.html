@@ -593,7 +593,7 @@
             const volumeLevel = isMuted ? 0 : 0.5;
         
             // Apply to all your audio objects
-            [catchSound, clockSound, buttonSound, gameOverSound].forEach(sound => {
+            [clickSound, grabSound, tickSound].forEach(sound => {
                 if (sound) sound.volume = volumeLevel;
             });
         
