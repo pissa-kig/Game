@@ -468,6 +468,7 @@
         const clickSound = new Audio('sounds/click.mp3');
         const grabSound = new Audio('sounds/grab.mp3');
         const tickSound = new Audio('sounds/tick.mp3');
+        const allSounds = [clickSound, grabSound, tickSound];
         clockImg.src = 'textures/clock.png';
         background.src = 'textures/bg.png'; 
         bonusImg.src = 'textures/bskt.png';
@@ -594,7 +595,7 @@
             const volumeLevel = isMuted ? 0 : 0.5;
         
             // Apply to all your audio objects
-            [clickSound, grabSound, tickSound].forEach(sound => {
+            allSounds.forEach(sound => {
                 if (sound) sound.volume = volumeLevel;
             });
         
