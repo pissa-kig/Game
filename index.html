@@ -492,6 +492,9 @@
         let slowTimer = null;
         let slowExpiration = 0; // Tracks the timestamp of when slow mode ends
         let isMuted = false;
+        let lives = 3;
+        const heartImg = 'textures/heart.png';
+        const lossImg = 'textures/loss.png';
 
         const basketImg = new Image();
         basketImg.src = 'textures/basket.png'; 
@@ -567,6 +570,45 @@
                 }, 300);
             }
         }
+
+
+        function setDifficulty(level) {
+    difficulty = level;
+    clickSound.play();
+    localStorage.setItem('appleDifficulty', level);
+
+    const buttons = document.querySelectorAll('.difficulty-btn');
+    buttons.forEach(btn => btn.classList.remove('active'));
+    
+    const selectedBtn = document.getElementById(level + 'Btn');
+    if (selectedBtn) selectedBtn.classList.add('active');
+
+    // Reset and Configure Hearts
+    resetHearts();
+}
+
+function resetHearts() {
+    const h1 = document.getElementById('heart1');
+    const h2 = document.getElementById('heart2');
+    const h3 = document.getElementById('heart3');
+
+    // Show all by default
+    h1.style.display = "block";
+    h2.style.display = "block";
+    h3.style.display = "block";
+    h1.src = h2.src = h3.src = heartImg;
+
+    if (difficulty === 'easy') {
+        lives = 3;
+    } else if (difficulty === 'medium') {
+        lives = 2;
+        h1.style.display = "none"; // Hide 1st heart
+    } else if (difficulty === 'hard') {
+        lives = 1;
+        h1.style.display = "none"; // Hide 1st heart
+        h2.style.display = "none"; // Hide 2nd heart
+    }
+}
 
         function startGame() {
             if (gameActive) return; // Prevent multiple starts
@@ -743,18 +785,33 @@
                 }
         
                 // Check for Game Over (Apple hit floor)  
-                if (a.y > canvas.height) {
-                    if (a.type === 'apple') {
-                        // Only end the game if it was a regular apple
-                        gameOverSound.currentTime = 0;
-                        gameOverSound.play();
-                        gameOver();
-                        return;
-                    } else {
-                        // If it was a bonus basket, just remove it from the array and keep playing
-                        apples.splice(i, 1);
-                    }
-                }
+                // Check for Game Over (Apple hit floor)
+if (a.y > canvas.height) {
+    if (a.type === 'apple') {
+        // Reduce lives
+        lives--;
+        
+        // Find the "current" heart to flip to loss.png
+        // Easy: 3,2,1 | Medium: 3,2 | Hard: 3
+        const currentHeart = document.getElementById('heart' + (lives + (difficulty === 'medium' ? 2 : (difficulty === 'hard' ? 3 : 1))));
+        // Simpler approach: update the last visible heart that hasn't been lost
+        if (lives === 2) document.getElementById('heart1').src = lossImg;
+        else if (lives === 1) document.getElementById('heart2').src = lossImg;
+        else if (lives === 0) document.getElementById('heart3').src = lossImg;
+
+        if (lives <= 0) {
+            gameOverSound.currentTime = 0;
+            if (!isMuted) gameOverSound.play();
+            gameOver();
+            return;
+        }
+        
+        // Remove the missed apple so it doesn't trigger multiple life losses
+        apples.splice(i, 1);
+    } else {
+        apples.splice(i, 1);
+    }
+}
             }
         }
 
